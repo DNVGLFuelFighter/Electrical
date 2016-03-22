@@ -1,0 +1,19 @@
+General propsition how should code structure for all universal module look
+
+	universal_module.h (& .c)
+		- imports for can uart
+		- can settings
+		- can messsage structure
+		- uart settings
+		- other functions needed in all moduels (timers or something like that)
+	can.h (& .c)
+		- functions for can bus (same library everywhere)
+	uart.h (& .c)
+		- functions for uart serial (same library everywhere)
+	module_specific_library.h (& .c)
+		- functions that are used only in this specific universal module, if it is usefull in multiple modules it should be in universal_module.h
+	
+	no main.h because it looks stupid
+	
+	???? minprintf.h ????? 
+		do they even use it
