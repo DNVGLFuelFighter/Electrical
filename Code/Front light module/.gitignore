@@ -1,0 +1,11 @@
+*.lst
+*.o
+*.eep
+*.elf
+*.lss
+*.lst
+*.map
+*.sym
+.dep
+*.swp
+src_old
