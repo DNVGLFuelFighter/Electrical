@@ -177,13 +177,6 @@ void can_health(void) {
 }
 
 BOOL can_packet_send(char mob, CAN_packet *packet) {
-	/*CAN_packet message;
-	
-	message.id = packet->id;
-	message.length = packet->length;
-	
-	message.data = packet->data;*/
-	
 	/* Clear global interrupts */
 	cli();
 	BOOL result = can_tx(mob, packet);
