@@ -11,7 +11,6 @@
 
 BOOL eyebrows = FALSE;
 
-
 void front_lights_init( void) {
 	// Set PE4 and PE5 as outputs
 	set_bit(DDRE, DDE4);
@@ -97,41 +96,38 @@ void front_lights_turn_right( BOOL on) {
 
 void light_show(CAN_packet *p, unsigned char mob) {
 	(void)mob;
-
-	if (p->id == 241) {
-		printf("\r\nPrepare for a light show");
-		int cntr = 0;
-		int off = 5;
-		while(off) {
-			switch(cntr){
-				case 1:
-				front_lights_headlights(128);
-				break;
-				case 2:
-				front_lights_eyebrows(TRUE);
-				break;
-				case 3:
-				front_lights_turn_left(TRUE);
-				break;
-				case 4:
-				front_lights_turn_right(TRUE);
-				break;
-				case 5:
-				front_lights_angel_eyes(TRUE);
-				break;
-			}
-			toggle_bit(DDRB, PB6);
-			clear_bit(DDRB, PB5);
-			_delay_ms(500);
-			cntr = cntr%5;
-			cntr++;
-			off--;
-			front_lights_headlights(FALSE);
-			front_lights_eyebrows(FALSE);
-			front_lights_angel_eyes(FALSE);
-			front_lights_turn_left(FALSE);
-			front_lights_turn_left(FALSE);
+	printf("\r\nPrepare for a light show");
+	int cntr = 0;
+	int off = 5;
+	while(off) {
+		switch(cntr){
+			case 1:
+			front_lights_headlights(128);
+			break;
+			case 2:
+			front_lights_eyebrows(TRUE);
+			break;
+			case 3:
+			front_lights_turn_left(TRUE);
+			break;
+			case 4:
+			front_lights_turn_right(TRUE);
+			break;
+			case 5:
+			front_lights_angel_eyes(TRUE);
+			break;
 		}
+		toggle_bit(DDRB, PB6);
+		clear_bit(DDRB, PB5);
+		_delay_ms(500);
+		cntr = cntr%5;
+		cntr++;
+		off--;
+		front_lights_headlights(FALSE);
+		front_lights_eyebrows(FALSE);
+		front_lights_angel_eyes(FALSE);
+		front_lights_turn_left(FALSE);
+		front_lights_turn_left(FALSE);
 	}
 }
 
@@ -158,10 +154,11 @@ void light_handler(CAN_packet *p, unsigned char mob) {
 	front_lights_angel_eyes(p->data[0] & 0b10000);
 }
 
-void light_indicator_left() {
-	
+void light_indicator_left( BOOL on) {
+	if (on)
+		
 }
 
-void light_indicator_right() {
+void light_indicator_right( BOOL on) {
 	
 }

@@ -29,30 +29,60 @@ typedef struct {
 #define HEADLIGHT_POWER_LIMIT 210
 
 /*! Initialize the front light module and set all lights OFF
-
 */
 void front_lights_init( void);
 
-void front_lights_headlights( int);
-
-void front_lights_eyebrows( BOOL);
-
-void front_lights_turn_left( BOOL);
- 
-void front_lights_turn_right( BOOL);
-
-void front_lights_angel_eyes( BOOL);
-
-/*! In order to turn the light show on send a CAN message with ID = 80 and
-	data[0] = TRUE
-	
+/*!	Turn on both headlights
+	\param power. Range 0..210
+	NB! headlights are connected in series
 */
-void light_show( CAN_packet*, unsigned char);
+void front_lights_headlights( int power);
 
-/*! Send a CAN message with ID = ID_lightsFront and
-	data[0] = 
+/*! Turn on both lights called eyebrows (same LED as indicator)
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void front_lights_eyebrows( BOOL on);
+
+/*! Turn on the left indicator light
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void front_lights_turn_left( BOOL on);
+ 
+/*! Turn on the right indicator light
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void front_lights_turn_right( BOOL on);
+
+/*! Turn on the lights called angel eyes
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void front_lights_angel_eyes( BOOL on);
+
+/*! Flashy light show
+	\param p CAN packet
+	\param mob message object. Range 0..14
+	See "can.h" for further explanation on params
+	To turn on light show send a CAN message with ID = ID_lightShow
+*/
+void light_show( CAN_packet* p, unsigned char mob);
+
+/*! Main handler of all the front lights
+	\param p CAN packet
+	\param mob message object. Range 0..14
+	See "can.h" for further explanation on params
+	To update lights send a CAN message data.ID = ID_lightsFront,
+	data.length = 1, data[0] = range 0bx..0bxxxxxx
 */
 void light_handler( CAN_packet*, unsigned char);
 
+/*! Turn on left indicator
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void light_indicator_left( BOOL on);
+
+/*! Turn on right indicator
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void light_indicator_right( BOOL on);
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */
