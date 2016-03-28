@@ -1,8 +1,8 @@
-Using of python scripts
-	imageopener.py 
-		- its python3 script
-		- accepts file as argument (gif and png tested)
-		- outputs file for eth sending or file for c int array (currently only setup in code with changing call of the function output_image or output_image_for_eth
+Using of python scripts  
+	imageopener.py  
+		- its python3 script  
+		- accepts file as argument (gif and png tested)  
+		- outputs file for eth sending or file for c int array (currently only setup in code with changing call of the function output_image or output_image_for_eth  
 			- output_image outputs image to stdout (TODO to file) in const int out_image[] = {}
 			- output_image_for_eth outputs image to stdout for ethernet sending
 	send.py
