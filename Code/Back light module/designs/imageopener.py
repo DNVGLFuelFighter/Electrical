@@ -17,9 +17,18 @@ def output_image(pixel_list ):
         if((idx+1) % 96 == 0):
             out = out + "\n"
        
-    out = out[:-1] + "};"
+    out = out[:-2] + "};"
     print(out)
-    print(len(out))
+#    print(len(out))
+    return 0
+
+def output_image_for_eth(pixel_list ):
+    out = ""
+    for idx, i in enumerate(pixel_list):
+        out = out + str(int(i, 16)) + ","
+
+    print(out)
+#    print(len(out))
     return 0
 
 """
@@ -29,7 +38,7 @@ def output_image(pixel_list ):
 """
 if  __name__ == "__main__":
     im = Image.open(sys.argv[1])
-    print(im.format, im.size, im.mode)
+#    print(im.format, im.size, im.mode)
     im.seek(0)
     try:
         while 1:
@@ -42,7 +51,7 @@ if  __name__ == "__main__":
                     tmp = hex(val).replace('0x', "")
                     if(len(tmp) == 1):
                         tmp = '0'+tmp
-                    color = color + tmp
+                    color = color + tmp                
                 pixel_hex.append(color)
         
             pixel_np2list = np.array(pixel_hex).reshape(8, len(pixel_hex)/8)
@@ -55,9 +64,9 @@ if  __name__ == "__main__":
                     #normal column
                     pixel_lst.append(column.tolist())
             pixel_lst = sum(pixel_lst, [])
-            print(pixel_lst)
+#            print(pixel_lst)
             
-            output_image(pixel_lst) 
+            output_image_for_eth(pixel_lst) 
             im.seek(im.tell()+1)
     except EOFError:
         pass
