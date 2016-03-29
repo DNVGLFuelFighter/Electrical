@@ -510,7 +510,7 @@ int main(void)
 	
 	CAN_packet message;
 	char MOb = 14;
-	message.id = ID_lightsFront; // 16
+	message.id = ID_lightsFront;
  324:	81 e5       	ldi	r24, 0x51	; 81
  326:	90 e0       	ldi	r25, 0x00	; 0
  328:	9a 83       	std	Y+2, r25	; 0x02
@@ -518,7 +518,7 @@ int main(void)
 	message.length = 1;
  32c:	81 e0       	ldi	r24, 0x01	; 1
  32e:	8b 83       	std	Y+3, r24	; 0x03
-	message.data[0] = 0b000000;	
+	message.data[0] = 0b000000;	// For message structure see front light module documentation
  330:	1c 82       	std	Y+4, r1	; 0x04
 			USART_tx_string("\n\rThe message was put on the can bus");
 			toggle_bit(DDRB, PB6);

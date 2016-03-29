@@ -40,6 +40,8 @@ C_SRCS +=  \
 ../can.c \
 ../front_lights_module.c \
 ../main.c \
+../timer0.c \
+../timer1.c \
 ../USART.c
 
 
@@ -53,24 +55,32 @@ OBJS +=  \
 can.o \
 front_lights_module.o \
 main.o \
+timer0.o \
+timer1.o \
 USART.o
 
 OBJS_AS_ARGS +=  \
 can.o \
 front_lights_module.o \
 main.o \
+timer0.o \
+timer1.o \
 USART.o
 
 C_DEPS +=  \
 can.d \
 front_lights_module.d \
 main.d \
+timer0.d \
+timer1.d \
 USART.d
 
 C_DEPS_AS_ARGS +=  \
 can.d \
 front_lights_module.d \
 main.d \
+timer0.d \
+timer1.d \
 USART.d
 
 OUTPUT_FILE_PATH +=Front_lights_module2.elf
@@ -87,6 +97,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

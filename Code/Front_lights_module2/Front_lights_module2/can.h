@@ -18,8 +18,7 @@
 
 #include "definitions.h"
 
-#define ID_brakeRight		1
-#define ID_brakeLeft		2
+#define ID_brakes			1
 #define ID_H2				6
 #define ID_motorOnOff		7
 #define ID_ESOutside		8
@@ -44,9 +43,6 @@ Various sensors via ADC */
 #define ID_fans				72
 #define ID_lightShow		80
 #define ID_lightsFront		81
-//#define ID_lightsAngle		82
-//#define ID_frontSigRight	83
-//#define ID_frontSigLeft		84
 #define ID_lightsBreak		91
 #define ID_backSigRight		92
 #define ID_backSigLeft		93

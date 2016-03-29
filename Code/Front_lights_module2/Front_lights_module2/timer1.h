@@ -18,8 +18,8 @@
 #define MAX		0xFFFF
 #define TOP		0x00FF //prone to change
 
-
-
-
+void timer1_init( void);
+unsigned int TIM16_ReadTCNT1( void);
+void TIM16_WriteTCNT1( unsigned int i);
 
 #endif /* TIMER1_H_ */

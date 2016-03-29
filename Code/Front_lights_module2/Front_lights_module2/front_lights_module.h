@@ -26,7 +26,10 @@ typedef struct {
 	uint8_t lights_near;	
 } front_lights;
 
-#define HEADLIGHT_POWER_LIMIT 210
+#define HEADLIGHT_POWER_LIMIT	210
+
+extern BOOL IND_LEFT;
+extern BOOL IND_RIGHT;
 
 /*! Initialize the front light module and set all lights OFF
 */
@@ -73,16 +76,16 @@ void light_show( CAN_packet* p, unsigned char mob);
 	To update lights send a CAN message data.ID = ID_lightsFront,
 	data.length = 1, data[0] = range 0bx..0bxxxxxx
 */
-void light_handler( CAN_packet*, unsigned char);
+void front_light_handler( CAN_packet*, unsigned char);
 
 /*! Turn on left indicator
 	\param on TRUE to turn on, FALSE to turn off
 */
-void light_indicator_left( BOOL on);
+void front_ind_left( BOOL on);
 
 /*! Turn on right indicator
 	\param on TRUE to turn on, FALSE to turn off
 */
-void light_indicator_right( BOOL on);
+void front_ind_right( BOOL on);
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */

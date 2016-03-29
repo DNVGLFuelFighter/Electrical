@@ -154,10 +154,10 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer.c">
+    <Compile Include="timer0.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer.h">
+    <Compile Include="timer0.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timer1.c">
