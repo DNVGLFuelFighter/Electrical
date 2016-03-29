@@ -18,8 +18,6 @@
 
 */
 
-/* TODO FLUSH THE BUFFERS AFTER RECEIVING A MESSAGE */
-
 #include "avr/interrupt.h"
 #include "definitions.h"
 #include "assert.h"
@@ -155,10 +153,9 @@ void can_init( void)
 	CANGCON |= 0x02;
 	CANGIE=(1<<ENIT) | (1<< ENRX);
 }
-
-/*
-void can_health(void) {
 	
+void can_health(void) {
+	/*
 	_Bool rxbusy = (CANGSTA, RXBSY);	// If 1 receiver busy
 	test_bit(CANGSTA, TXBSY);	// If 1 transmitter busy
 	test_bit(CANGSTA, BOFF);	// If 1 bus off mode
@@ -169,25 +166,17 @@ void can_health(void) {
 	test_bit(CANGIT, AERG);		// If 1 acknowledgment error interrupt
 	// CANTEC //Bit 7:0 TEC7:0: Transmit Error Count
 	// CANREC //Bit 7:0 REC7:0: Receive Error Count
-	/ *test_bit(CANSTMOB, TXOK);	// Interrupt flag for complete transmission
+	test_bit(CANSTMOB, TXOK);	// Interrupt flag for complete transmission
 	test_bit(CANSTMOB, RXOK);	// Interrupt flag for complete reception
 	test_bit(CANSTMOB, BERR);	// Interrupt flag for bit error in transmission
 	test_bit(CANSTMOB, SERR);	// Interrupt flag for stuff error
 	test_bit(CANSTMOB, CERR);	// Interrupt flag for CRC error
 	test_bit(CANSTMOB, FERG);	// Interrupt flag for Form error
 	test_bit(CANSTMOB, AERG);	// Interrupt flag for Acknowledgment error
-	* /
+	*/
 }
-*/
 
 BOOL can_packet_send(char mob, CAN_packet *packet) {
-	/*CAN_packet message;
-	
-	message.id = packet->id;
-	message.length = packet->length;
-	
-	message.data = packet->data;*/
-	
 	/* Clear global interrupts */
 	cli();
 	BOOL result = can_tx(mob, packet);

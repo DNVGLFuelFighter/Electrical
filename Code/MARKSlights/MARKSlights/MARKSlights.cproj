@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>{dce6c7e3-ee26-4d79-826b-08594b9ad897}</ProjectGuid>
+    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
     <avrdevice>AT90CAN128</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>DNVGLFF_UV</AssemblyName>
-    <Name>DNVGLFF_UV</Name>
-    <RootNamespace>DNVGLFF_UV</RootNamespace>
+    <AssemblyName>MARKSlights</AssemblyName>
+    <Name>MARKSlights</Name>
+    <RootNamespace>MARKSlights</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -44,7 +44,6 @@
     <com_atmel_avrdbg_tool_atmelice>
       <ToolOptions>
         <InterfaceProperties>
-          <IspClock>125000</IspClock>
           <JtagDbgClock>200000</JtagDbgClock>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
@@ -137,46 +136,19 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="back_lights_module.c">
+    <Compile Include="lights.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="back_lights_module.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="can.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="can.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="definitions.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="front_module.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="front_module.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="LED.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="LED.h">
+    <Compile Include="lights.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer1.c">
+    <Compile Include="universal_module.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer1.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="USART.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="USART.h">
+    <Compile Include="universal_module.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

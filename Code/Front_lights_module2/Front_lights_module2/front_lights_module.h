@@ -28,6 +28,7 @@ typedef struct {
 
 #define HEADLIGHT_POWER_LIMIT	210
 
+
 extern BOOL IND_LEFT;
 extern BOOL IND_RIGHT;
 

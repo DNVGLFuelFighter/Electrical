@@ -6,12 +6,10 @@
  */ 
 
 #include "front_lights_module.h"
-#include "can.h"
-#include "timer1.h"
 
 BOOL IND_LEFT = FALSE;
 BOOL IND_RIGHT = FALSE;
-BOOL EYEBROWS = FALSE;
+BOOL EYEBROWS_ON = FALSE;
 
 void front_lights_init( void) {
 	// Set PE4 and PE5 as outputs
@@ -74,24 +72,24 @@ void front_lights_angel_eyes( BOOL on) {
 void front_lights_turn_left( BOOL on) {
 	if (on) {
 		set_bit(PORTF, PF2);
-		if (!EYEBROWS)
+		if (!EYEBROWS_ON)
 			set_bit(PORTF, PF1);
 		return;
 	}
 	clear_bit(PORTF, PF2);
-	if(!EYEBROWS)
+	if(!EYEBROWS_ON)
 		clear_bit(PORTF, PF1);
 }
 
 void front_lights_turn_right( BOOL on) {
 	if (on) {
 		set_bit(PORTF, PF0);
-		if (!EYEBROWS)
+		if (!EYEBROWS_ON)
 			set_bit(PORTE, PE5);
 		return;
 	}
 	clear_bit(PORTF, PF0);
-	if(!EYEBROWS)
+	if(!EYEBROWS_ON)
 		clear_bit(PORTE, PE5);	
 }
 
@@ -99,23 +97,23 @@ void front_light_handler(CAN_packet *p, unsigned char mob) {
 	(void)mob;
 	
 	/* Headlights near and far */
-	if (p->data[0] & 0b1)
+	if (p->data[0] & HEADLIGHTS_NEAR)
 		front_lights_headlights(HEADLIGHT_POWER_LIMIT/2);
-	else if (p->data[0] & 0b10)
+	else if (p->data[0] & HEADLIGHTS_FAR)
 		front_lights_headlights(HEADLIGHT_POWER_LIMIT);
 	else front_lights_headlights(0);
 	
 	/* Eyebrows */
-	front_lights_eyebrows(p->data[0] & 0b100000);
+	front_lights_eyebrows(p->data[0] & EYEBROWS);
 	
 	/* Right turn signal */
-	front_ind_right(p->data[0] & 0b100);
+	front_ind_right(p->data[0] & INDICATOR_RIGHT);
 	
 	/* Left turn signal */
-	front_ind_left(p->data[0] & 0b1000);
+	front_ind_left(p->data[0] & INDICATOR_LEFT);
 	
 	/* Angel eyes */
-	front_lights_angel_eyes(p->data[0] & 0b10000);
+	front_lights_angel_eyes(p->data[0] & ANGEL_EYES);
 }
 
 void front_ind_left( BOOL on) {
