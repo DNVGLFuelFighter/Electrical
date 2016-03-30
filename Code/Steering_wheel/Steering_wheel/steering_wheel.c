@@ -11,24 +11,24 @@
 CAN_packet current;
 CAN_packet updated;
 
-void sw_init( CAN_packet *current, CAN_packet *updated) {
-	*current = sw_input();
-	*updated = sw_input();
+void sw_init( void) {	
+	/* Set PE3 and PE4 as inputs */
+	clear_bit(DDRE, DDE3);
+	clear_bit(DDRE, DDE4);
+	/* Set PE3 and PE4 as high (pull up res) */
+	set_bit(PORTE, PE3);
+	set_bit(PORTE, PE4);	
 }
 
-CAN_packet sw_input( void) {
-	CAN_packet message;
-	message.id = ID_steeringWheel;
-	message.length = 2;
+void sw_input( CAN_packet* p) {	
+	/* Read left/right indicator */
+	if(!test_bit(PINE, PE4))
+		p->data[0] = (1<<2);
+	else if (!test_bit(PINE, PE3))
+		p->data[0] = (1<<3);
+	else
+		p->data[0] = 0;
 	
-	/* Read deadmans button */
-	if(!test_bit(PINB, PB4)) {
-		message.data[0] = 15;
-	} else {
-		message.data[0] = 0;
-	}
-	/* Read speed potentiometer */
-	//message.data[1] = get_speed();
 	/* Read cruise control */
 	//message.data[2] = test_bit();
 	/* Read cruise control plus */
@@ -42,18 +42,8 @@ CAN_packet sw_input( void) {
 	/* Read indicator left */
 	//message.data[7] = test_bit();
 	/* Read indicator right */
-	//message.data[8] = test_bit();
+	//message.data[8] = test_bit(); // a problem. We only got 8 bits
 	//return message;
-	//message.data[0] = 0;
-	message.data[1] = 1;
-	message.data[2] = 2;
-	message.data[3] = 3;
-	message.data[4] = 4;
-	message.data[5] = 5;
-	message.data[6] = 6;
-	message.data[7] = 7;
-	message.data[8] = 8; //  a problem!
-	
-	return message;
+	//message.data[0] = 0;	
 }
 

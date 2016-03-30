@@ -13,7 +13,7 @@
 #ifndef STEERING_WHEEL_H_
 #define STEERING_WHEEL_H_
 
-void sw_init( CAN_packet*, CAN_packet*);
-CAN_packet sw_input( void);
+void sw_init( void);
+void sw_input( CAN_packet*);
 
 #endif /* STEERING_WHEEL_H_ */

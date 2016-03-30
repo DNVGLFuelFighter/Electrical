@@ -9,15 +9,17 @@
 #include "timer0.h"
 #include "USART.h"
 #include "steering_wheel.h"
+#include "adc.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
 
-void inits(CAN_packet *current, CAN_packet* updated) {
+void inits( void) {
 	can_init();
 	USART_init(MYUBRR, true);
 	timer0_init();
-	sw_init(current, updated);
+	sw_init();
+	adc_init();
 	printf("\r\nInitialization complete");
 }
 
@@ -26,47 +28,53 @@ void response(CAN_packet* p, unsigned int mob) {
 	printf("\r\nReceived");
 }
 
-
 int main(void)
 {
 	int different;
 	BOOL ret;
-	
+	ret = FALSE;
+		
 	/* Make two CAN packets */
 	CAN_packet current;
 	CAN_packet updated;
 	
-	/* Initialize module */
-	inits(&current, &updated);
+	/* Initialize module and packets*/
+	inits();
 	
-	DDRB = 0x00;
-	PORTB = 0xff;
+	/* Initialize packets */
+	current.id = ID_steeringWheel;
+	current.length = 1;
+	updated.id = ID_steeringWheel;
+	updated.length = 1;
+	sw_input(&current);
+	sw_input(&updated);
+	adc_input(SPEED, &current);
+	adc_input(SPEED, &updated);
+	adc_sleep();
+	
     for(;;) {
 		_delay_ms(100);
-		/* Write input to CAN_packet "current" */
-		updated = sw_input(); 
+		/* Update one CAN_packet */
+		sw_input(&updated); 
+		adc_init();
+		adc_input(FANS, &updated);
+		adc_sleep();
 		/* Compare the two packets */
 		different = memcmp(current.data, updated.data, 8);
 		if (different) {
+			/*printf("\r\nCurrent data[0] - %u",current.data[0]);
+			printf("\r\nCurrent speed - %u",current.data[1]);
+			printf("\r\nUpdated data[0] - %u",updated.data[0]);
+			*/
 			/* Send a message with new data */
 			ret = can_packet_send(1, &updated);
 			current = updated;
 		}
 		if (ret) {
-			printf("\r\nDead man's switch");
+			printf("\r\nMessage sent");
 			ret = FALSE;
 		}
-		//TODO: if successfully read, stop sending!
+ 		//TODO: if successfully read, stop sending!
 		asm("sleep");;
 	}
-/*
-	ret = prepare_rx(0, ID_steeringWheel, 0xff, response);
-	sei();
-	
-	for(;;)
-		asm("sleep");;
-    return 0;
-	*/
 }
-
-

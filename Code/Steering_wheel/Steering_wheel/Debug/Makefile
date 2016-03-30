@@ -37,6 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../adc.c \
 ../can.c \
 ../main.c \
 ../steering_wheel.c \
@@ -51,6 +52,7 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+adc.o \
 can.o \
 main.o \
 steering_wheel.o \
@@ -58,6 +60,7 @@ timer0.o \
 USART.o
 
 OBJS_AS_ARGS +=  \
+adc.o \
 can.o \
 main.o \
 steering_wheel.o \
@@ -65,6 +68,7 @@ timer0.o \
 USART.o
 
 C_DEPS +=  \
+adc.d \
 can.d \
 main.d \
 steering_wheel.d \
@@ -72,6 +76,7 @@ timer0.d \
 USART.d
 
 C_DEPS_AS_ARGS +=  \
+adc.d \
 can.d \
 main.d \
 steering_wheel.d \
@@ -92,6 +97,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
