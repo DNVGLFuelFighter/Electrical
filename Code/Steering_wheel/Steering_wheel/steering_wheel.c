@@ -12,38 +12,56 @@ CAN_packet current;
 CAN_packet updated;
 
 void sw_init( void) {	
+	/* Indicators init */
 	/* Set PE3 and PE4 as inputs */
 	clear_bit(DDRE, DDE3);
 	clear_bit(DDRE, DDE4);
 	/* Set PE3 and PE4 as high (pull up res) */
 	set_bit(PORTE, PE3);
 	set_bit(PORTE, PE4);	
+	
+	/* Whiper init */
+	clear_bit(DDRE, DDE5);
+	set_bit(PORTE, PE5);
+	
+	/* Horn init */
+	clear_bit(DDRB, DDB4);
+	set_bit(PORTB, PB4);
+	
+	/* Deadman */
+	clear_bit(DDRB, DDB3);
+	set_bit(PORTB, PB3);
+	
+	/* Speed potentiometer uses adc_init() */
+	
+	/* Cruise control */
+	clear_bit(DDRB, DDB2);
+	clear_bit(DDRB, DDB1);
+	set_bit(PORTB, PB2);
+	set_bit(PORTB, PB1);	
 }
 
 void sw_input( CAN_packet* p) {	
-	/* Read left/right indicator */
+	/* Initialize data */
+	p->data[0] = 0x00;
+	/* Read right/left indicator */
 	if(!test_bit(PINE, PE4))
-		p->data[0] = (1<<2);
+		p->data[0] |= (1<<0);
 	else if (!test_bit(PINE, PE3))
-		p->data[0] = (1<<3);
-	else
-		p->data[0] = 0;
-	
+		p->data[0] |= (1<<1);	
 	/* Read cruise control */
-	//message.data[2] = test_bit();
-	/* Read cruise control plus */
-	//message.data[3] = get_cc_plus();
-	/* Read cruise control minus */
-	//message.data[4] = get_cc_plus();
+	if(!test_bit(PINB, PB2))
+		p->data[0] |= (1<<2);
+	else if(!test_bit(PINB, PB1))
+		p->data[0] |= (1<<3);	
 	/* Read horn */
-	//message.data[5] = test_bit();
+	if (!test_bit(PINB, PB4))
+		p->data[0] |= (1<<4);
 	/* Read whiper */
-	//message.data[6] = test_bit();
-	/* Read indicator left */
-	//message.data[7] = test_bit();
-	/* Read indicator right */
-	//message.data[8] = test_bit(); // a problem. We only got 8 bits
-	//return message;
-	//message.data[0] = 0;	
+	if (!test_bit(PINE, PE5))
+		p->data[0] |= (1<<5);
+	/* Read deadman */
+	if (!test_bit(PINB, PB3))
+		p->data[0] |= (1<<6);
 }
 

@@ -33,15 +33,12 @@ Various sensors via ADC */
 #define ID_motorCtrlLeft	22
 #define ID_hallSensor		23
 #define ID_steeringWheel	31
-#define ID_buttons			32
 #define ID_screen			41
 #define ID_backCamera		42
 #define ID_GPS				51
 #define ID_IMU				52
 #define ID_SD				53
 #define ID_3G				61
-#define ID_horns			71
-#define ID_fans				72
 #define ID_lightShow		80
 #define ID_lightsFront		81
 #define ID_lightsBreak		91

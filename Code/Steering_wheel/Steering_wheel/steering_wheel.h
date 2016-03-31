@@ -6,9 +6,9 @@
  */ 
 
 #include "definitions.h"
-#include "timer0.h"
 #include "can.h"
 #include "USART.h"
+#include <avr/interrupt.h>
 
 #ifndef STEERING_WHEEL_H_
 #define STEERING_WHEEL_H_

@@ -41,7 +41,6 @@ C_SRCS +=  \
 ../can.c \
 ../main.c \
 ../steering_wheel.c \
-../timer0.c \
 ../USART.c
 
 
@@ -56,7 +55,6 @@ adc.o \
 can.o \
 main.o \
 steering_wheel.o \
-timer0.o \
 USART.o
 
 OBJS_AS_ARGS +=  \
@@ -64,7 +62,6 @@ adc.o \
 can.o \
 main.o \
 steering_wheel.o \
-timer0.o \
 USART.o
 
 C_DEPS +=  \
@@ -72,7 +69,6 @@ adc.d \
 can.d \
 main.d \
 steering_wheel.d \
-timer0.d \
 USART.d
 
 C_DEPS_AS_ARGS +=  \
@@ -80,7 +76,6 @@ adc.d \
 can.d \
 main.d \
 steering_wheel.d \
-timer0.d \
 USART.d
 
 OUTPUT_FILE_PATH +=Steering_wheel.elf
@@ -97,8 +92,6 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-
-
 
 
 

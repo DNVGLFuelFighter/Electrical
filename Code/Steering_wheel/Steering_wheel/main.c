@@ -6,7 +6,6 @@
  */ 
 #include "definitions.h"
 #include "can.h"
-#include "timer0.h"
 #include "USART.h"
 #include "steering_wheel.h"
 #include "adc.h"
@@ -17,7 +16,6 @@
 void inits( void) {
 	can_init();
 	USART_init(MYUBRR, true);
-	timer0_init();
 	sw_init();
 	adc_init();
 	printf("\r\nInitialization complete");
