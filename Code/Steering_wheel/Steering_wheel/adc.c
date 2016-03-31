@@ -37,7 +37,7 @@ void adc_input(int ref, CAN_packet* p) {
 	set_bit(ADCSRA, ADSC);
 	/* Wait for the conversion to complete */
 	while(test_bit(ADCSRA, ADSC));
-	p->data[1] = ADC;
+	p->data[1] = (ADC>>2);
 }
 
 /*! ADC conversion complete interrupt 

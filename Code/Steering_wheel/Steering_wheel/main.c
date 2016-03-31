@@ -41,9 +41,9 @@ int main(void)
 	
 	/* Initialize packets */
 	current.id = ID_steeringWheel;
-	current.length = 1;
+	current.length = 2;
 	updated.id = ID_steeringWheel;
-	updated.length = 1;
+	updated.length = 2;
 	sw_input(&current);
 	sw_input(&updated);
 	adc_input(SPEED, &current);
@@ -55,15 +55,16 @@ int main(void)
 		/* Update one CAN_packet */
 		sw_input(&updated); 
 		adc_init();
-		adc_input(FANS, &updated);
+		adc_input(SPEED, &updated);
 		adc_sleep();
 		/* Compare the two packets */
 		different = memcmp(current.data, updated.data, 8);
 		if (different) {
 			/*printf("\r\nCurrent data[0] - %u",current.data[0]);
-			printf("\r\nCurrent speed - %u",current.data[1]);
-			printf("\r\nUpdated data[0] - %u",updated.data[0]);
 			*/
+			printf("\r\nCurrent speed - %u",current.data[1]);
+			
+			//printf("\r\nUpdated data[0] - %u",updated.data[0]);
 			/* Send a message with new data */
 			ret = can_packet_send(1, &updated);
 			current = updated;
