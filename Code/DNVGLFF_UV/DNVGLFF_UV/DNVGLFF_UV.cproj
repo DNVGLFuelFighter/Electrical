@@ -152,12 +152,6 @@
     <Compile Include="definitions.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="front_lights_module.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="front_lights_module.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="front_module.c">
       <SubType>compile</SubType>
     </Compile>
@@ -171,6 +165,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer1.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer1.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="USART.c">

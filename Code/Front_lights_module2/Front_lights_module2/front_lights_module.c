@@ -5,11 +5,11 @@
  *  Author: Vilius
  */ 
 
-
 #include "front_lights_module.h"
-#include "can.h"
 
-BOOL eyebrows = FALSE;
+BOOL IND_LEFT = FALSE;
+BOOL IND_RIGHT = FALSE;
+BOOL EYEBROWS_ON = FALSE;
 
 void front_lights_init( void) {
 	// Set PE4 and PE5 as outputs
@@ -52,8 +52,7 @@ void front_lights_headlights( int power) {
 }
 
 void front_lights_eyebrows( BOOL on) {
-	eyebrows = on;
-	if (on) {
+	if (on & !IND_LEFT &!IND_RIGHT) {
 		set_bit(PORTF, PF1);
 		set_bit(PORTE, PE5);
 		return;
@@ -73,25 +72,64 @@ void front_lights_angel_eyes( BOOL on) {
 void front_lights_turn_left( BOOL on) {
 	if (on) {
 		set_bit(PORTF, PF2);
-		if (!eyebrows)
+		if (!EYEBROWS_ON)
 			set_bit(PORTF, PF1);
 		return;
 	}
 	clear_bit(PORTF, PF2);
-	if(!eyebrows)
+	if(!EYEBROWS_ON)
 		clear_bit(PORTF, PF1);
 }
 
 void front_lights_turn_right( BOOL on) {
 	if (on) {
 		set_bit(PORTF, PF0);
-		if (!eyebrows)
+		if (!EYEBROWS_ON)
 			set_bit(PORTE, PE5);
 		return;
 	}
 	clear_bit(PORTF, PF0);
-	if(!eyebrows)
+	if(!EYEBROWS_ON)
 		clear_bit(PORTE, PE5);	
+}
+
+void front_light_handler(CAN_packet *p, unsigned char mob) {
+	(void)mob;
+	
+	/* Headlights near and far */
+	if (p->data[0] & HEADLIGHTS_NEAR)
+		front_lights_headlights(HEADLIGHT_POWER_LIMIT/2);
+	else if (p->data[0] & HEADLIGHTS_FAR)
+		front_lights_headlights(HEADLIGHT_POWER_LIMIT);
+	else front_lights_headlights(0);
+	
+	/* Eyebrows */
+	front_lights_eyebrows(p->data[0] & EYEBROWS);
+	
+	/* Right turn signal */
+	front_ind_right(p->data[0] & INDICATOR_RIGHT);
+	
+	/* Left turn signal */
+	front_ind_left(p->data[0] & INDICATOR_LEFT);
+	
+	/* Angel eyes */
+	front_lights_angel_eyes(p->data[0] & ANGEL_EYES);
+}
+
+void front_ind_left( BOOL on) {
+	IND_LEFT = on;
+}
+
+void front_ind_right( BOOL on) {
+	IND_RIGHT = on;
+}
+
+BOOL get_ind_left( void) {
+	return test_bit(PORTF, PF2);
+}
+
+BOOL get_ind_right( void) {
+	return test_bit(PORTF, PF0);
 }
 
 void light_show(CAN_packet *p, unsigned char mob) {
@@ -129,36 +167,4 @@ void light_show(CAN_packet *p, unsigned char mob) {
 		front_lights_turn_left(FALSE);
 		front_lights_turn_left(FALSE);
 	}
-}
-
-void light_handler(CAN_packet *p, unsigned char mob) {
-	(void)mob;
-	
-	/* Headlights near and far */
-	if (p->data[0] & 0b1)
-		front_lights_headlights(HEADLIGHT_POWER_LIMIT/2);
-	else if (p->data[0] & 0b10)
-		front_lights_headlights(HEADLIGHT_POWER_LIMIT);
-	else front_lights_headlights(0);
-	
-	/* Eyebrows */
-	front_lights_eyebrows(p->data[0] & 0b100000);
-	
-	/* Right turn signal */
-	front_lights_turn_right(p->data[0] & 0b100);
-	
-	/* Left turn signal */
-	front_lights_turn_left(p->data[0] & 0b1000);
-	
-	/* Angel eyes */
-	front_lights_angel_eyes(p->data[0] & 0b10000);
-}
-
-void light_indicator_left( BOOL on) {
-	if (on)
-		
-}
-
-void light_indicator_right( BOOL on) {
-	
 }

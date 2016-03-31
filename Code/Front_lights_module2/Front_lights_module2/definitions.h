@@ -24,6 +24,13 @@ typedef char BOOL;
 #define false 0
 
 #define ID_TEST 16
+// Used in front_light_handler()
+#define HEADLIGHTS_NEAR			0b1
+#define HEADLIGHTS_FAR			0b10
+#define INDICATOR_RIGHT			0b100
+#define INDICATOR_LEFT			0b1000
+#define ANGEL_EYES				0b10000
+#define EYEBROWS				0b100000
 
 //sets bit "bit" in register "reg"
 #define set_bit(reg, bit)		(reg |= (1<<bit))
