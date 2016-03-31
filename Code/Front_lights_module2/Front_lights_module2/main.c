@@ -28,10 +28,10 @@ void inits(void) {
 int main(void)
 {
 	BOOL ret;
-	
+
 	inits();
 	
-	ret = prepare_rx(0, ID_lightsFront, 0xff, front_light_handler);
+	ret = prepare_rx(0, ID_steeringWheel, 0xff, front_light_handler);
 	
 	/* Set global interrupts */
 	sei();
@@ -40,4 +40,6 @@ int main(void)
 		asm("sleep");;
 	return 0;
 }
+
+
 

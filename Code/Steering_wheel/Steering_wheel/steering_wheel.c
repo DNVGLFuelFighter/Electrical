@@ -55,11 +55,11 @@ void sw_input( CAN_packet* p) {
 	else if(!test_bit(PINB, PB1))
 		p->data[0] |= (1<<3);	
 	/* Read horn */
-	//if (!test_bit(PINB, PB4))
-	p->data[0] |= (1<<4);
+	if (!test_bit(PINB, PB4))
+		p->data[0] |= (1<<4);
 	/* Read whiper */
-	//if (!test_bit(PINE, PE5))
-	p->data[0] |= (1<<5);
+	if (!test_bit(PINE, PE5))
+		p->data[0] |= (1<<5);
 	/* Read deadman */
 	if (!test_bit(PINB, PB3))
 		p->data[0] |= (1<<6);

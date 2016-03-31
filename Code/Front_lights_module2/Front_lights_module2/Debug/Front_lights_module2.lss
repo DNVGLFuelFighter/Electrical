@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000180  00000000  00000000  00000f54  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000102b  00000000  00000000  000010d4  2**0
+  6 .debug_info   0000101f  00000000  00000000  000010d4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000890  00000000  00000000  000020ff  2**0
+  7 .debug_abbrev 00000883  00000000  00000000  000020f3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000c79  00000000  00000000  0000298f  2**0
+  8 .debug_line   00000c78  00000000  00000000  00002976  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000378  00000000  00000000  00003608  2**2
+  9 .debug_frame  00000378  00000000  00000000  000035f0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000486  00000000  00000000  00003980  2**0
+ 10 .debug_str    00000484  00000000  00000000  00003968  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000a2b  00000000  00000000  00003e06  2**0
+ 11 .debug_loc    00000a2b  00000000  00000000  00003dec  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000150  00000000  00000000  00004831  2**0
+ 12 .debug_ranges 00000150  00000000  00000000  00004817  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -430,7 +430,6 @@ void can_init( void)
 	unsigned mob;
 //! \bug different baud rate support not implemented yet 
 #if F_CPU == 8000000
-
 	//Old implementation
 	CANBT1=0x06;	// 8MHz, 100kbit/s
  2a2:	86 e0       	ldi	r24, 0x06	; 6
@@ -442,9 +441,9 @@ void can_init( void)
  2ae:	8a e5       	ldi	r24, 0x5A	; 90
  2b0:	80 93 e4 00 	sts	0x00E4, r24
  2b4:	80 e0       	ldi	r24, 0x00	; 0
+	CANBT2=0x04;
 	CANBT3=0x13;
 #endif
-	
 	for (mob = 0; mob < NO_MOBS; mob++)
 		{
 		CANPAGE  = (mob << 4);
@@ -456,9 +455,9 @@ void can_init( void)
 		CANCDMOB = 0;
  2be:	ef ee       	ldi	r30, 0xEF	; 239
  2c0:	f0 e0       	ldi	r31, 0x00	; 0
+	CANBT2=0x04;
 	CANBT3=0x13;
 #endif
-	
 	for (mob = 0; mob < NO_MOBS; mob++)
 		{
 		CANPAGE  = (mob << 4);
@@ -471,11 +470,11 @@ void can_init( void)
 		CANCDMOB = 0;
  2cc:	10 82       	st	Z, r1
  2ce:	8f 5f       	subi	r24, 0xFF	; 255
+#else
 	CANBT1=0x26;	// 16 MHz, 100kbit/s
 	CANBT2=0x04;
 	CANBT3=0x13;
 #endif
-	
 	for (mob = 0; mob < NO_MOBS; mob++)
  2d0:	8f 30       	cpi	r24, 0x0F	; 15
  2d2:	b9 f7       	brne	.-18     	; 0x2c2 <can_init+0x24>
@@ -604,12 +603,12 @@ void front_ind_right( BOOL on) {
  3a8:	df 93       	push	r29
  3aa:	ec 01       	movw	r28, r24
  3ac:	8b 81       	ldd	r24, Y+3	; 0x03
- 3ae:	80 ff       	sbrs	r24, 0
+ 3ae:	82 ff       	sbrs	r24, 2
  3b0:	04 c0       	rjmp	.+8      	; 0x3ba <front_light_handler+0x14>
  3b2:	89 e6       	ldi	r24, 0x69	; 105
  3b4:	80 93 98 00 	sts	0x0098, r24
  3b8:	08 c0       	rjmp	.+16     	; 0x3ca <front_light_handler+0x24>
- 3ba:	81 ff       	sbrs	r24, 1
+ 3ba:	83 ff       	sbrs	r24, 3
  3bc:	04 c0       	rjmp	.+8      	; 0x3c6 <front_light_handler+0x20>
  3be:	82 ed       	ldi	r24, 0xD2	; 210
  3c0:	80 93 98 00 	sts	0x0098, r24
@@ -620,10 +619,10 @@ void front_ind_right( BOOL on) {
  3ce:	ab df       	rcall	.-170    	; 0x326 <front_lights_eyebrows>
  3d0:	8b 81       	ldd	r24, Y+3	; 0x03
  3d2:	98 2f       	mov	r25, r24
- 3d4:	94 70       	andi	r25, 0x04	; 4
+ 3d4:	91 70       	andi	r25, 0x01	; 1
  3d6:	90 93 3e 01 	sts	0x013E, r25
  3da:	98 2f       	mov	r25, r24
- 3dc:	98 70       	andi	r25, 0x08	; 8
+ 3dc:	92 70       	andi	r25, 0x02	; 2
  3de:	90 93 3f 01 	sts	0x013F, r25
  3e2:	80 71       	andi	r24, 0x10	; 16
  3e4:	ba df       	rcall	.-140    	; 0x35a <front_lights_angel_eyes>
@@ -683,16 +682,16 @@ void inits(void) {
 int main(void)
 {
 	BOOL ret;
-	BOOL ret2;
+
 	inits();
  416:	f0 df       	rcall	.-32     	; 0x3f8 <inits>
-	//ret = prepare_rx(14, ID_lightShow, 0xff, light_show);
-	ret2 = prepare_rx(0, ID_lightsFront, 0xff, front_light_handler);
+	
+	ret = prepare_rx(0, ID_steeringWheel, 0xff, front_light_handler);
  418:	23 ed       	ldi	r18, 0xD3	; 211
  41a:	31 e0       	ldi	r19, 0x01	; 1
  41c:	4f ef       	ldi	r20, 0xFF	; 255
  41e:	50 e0       	ldi	r21, 0x00	; 0
- 420:	61 e5       	ldi	r22, 0x51	; 81
+ 420:	6f e1       	ldi	r22, 0x1F	; 31
  422:	70 e0       	ldi	r23, 0x00	; 0
  424:	80 e0       	ldi	r24, 0x00	; 0
  426:	c7 de       	rcall	.-626    	; 0x1b6 <prepare_rx>

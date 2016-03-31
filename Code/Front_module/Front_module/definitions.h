@@ -25,10 +25,10 @@ typedef char BOOL;
 
 #define ID_TEST 16
 // Used in front_light_handler()
-#define INDICATOR_RIGHT			0b1
-#define INDICATOR_LEFT			0b10
-#define HEADLIGHTS_NEAR			0b100
-#define HEADLIGHTS_FAR			0b1000
+#define HEADLIGHTS_NEAR			0b1
+#define HEADLIGHTS_FAR			0b10
+#define INDICATOR_RIGHT			0b100
+#define INDICATOR_LEFT			0b1000
 #define ANGEL_EYES				0b10000
 #define EYEBROWS				0b100000
 
