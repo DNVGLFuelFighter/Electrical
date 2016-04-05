@@ -15,11 +15,16 @@
 
 #include "spi.h"
 #include "can.h"
+//#include "timer0.h"
 
 
 #define OUT_E	0b00100110
 #define OUT_F	0b00101110
 #define OUT_G	0b00110110
+
+extern BOOL HORN_ON;
+extern BOOL WIPERS_ON;
+extern BOOL FANS_ON;
 
 void fm_init( void);
 void fm_horn(float voltage);

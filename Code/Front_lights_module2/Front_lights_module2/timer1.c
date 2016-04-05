@@ -5,12 +5,6 @@
  *  Author: Vilius
  */ 
 #include "timer1.h"
-#include <avr/interrupt.h>
-#include <avr/io.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-BOOL T1_OVF_CNT = FALSE;
 
 void timer1_init( void) {
 	
@@ -27,8 +21,6 @@ void timer1_init( void) {
 	/* Enable global interrupts*/
 	sei();
 	
-	/* Initialize overflow variable */
-	T1_OVF_CNT = 0;
 	/*
 	unsigned int i;
 	// How to access the 16-bit timer registers 
@@ -75,17 +67,17 @@ ISR(TIMER1_OVF_vect) {
 	if (IND_LEFT) {
 		// toggle the left indicator
 		if (get_ind_left())
-		front_lights_turn_left(FALSE);
+			front_lights_turn_left(FALSE);
 		else
-		front_lights_turn_left(TRUE);
+			front_lights_turn_left(TRUE);
 	} else
 	front_lights_turn_left(FALSE);
 	if (IND_RIGHT) {
 		// toggle the right indicator
 		if (get_ind_right())
-		front_lights_turn_right(FALSE);
+			front_lights_turn_right(FALSE);
 		else
-		front_lights_turn_right(TRUE);
+			front_lights_turn_right(TRUE);
 	} else
 	front_lights_turn_right(FALSE);
 }

@@ -19,6 +19,7 @@ void inits( void) {
 	sw_init();
 	adc_init();
 	printf("\r\nInitialization complete");
+	set_bit(DDRB, PB6);
 }
 
 void response(CAN_packet* p, unsigned int mob) {
@@ -33,47 +34,46 @@ int main(void)
 	ret = FALSE;
 		
 	/* Make two CAN packets */
-	CAN_packet current;
-	CAN_packet updated;
+	CAN_packet current_msg;
+	CAN_packet updated_msg;
 	
 	/* Initialize module and packets*/
 	inits();
 	
 	/* Initialize packets */
-	current.id = ID_steeringWheel;
-	current.length = 1;
-	updated.id = ID_steeringWheel;
-	updated.length = 1;
-	sw_input(&current);
-	sw_input(&updated);
-	adc_input(SPEED, &current);
-	adc_input(SPEED, &updated);
+	current_msg.id = ID_steeringWheel;
+	current_msg.length = 1;
+	updated_msg.id = ID_steeringWheel;
+	updated_msg.length = 1;
+	sw_input(&current_msg);
+	sw_input(&updated_msg);
+	adc_input(SPEED, &current_msg);
+	adc_input(SPEED, &updated_msg);
 	adc_sleep();
 	
+	updated_msg.data[0] = 0b010000;
     for(;;) {
-		_delay_ms(100);
+		
 		/* Update one CAN_packet */
-		sw_input(&updated); 
+		sw_input(&updated_msg); 
 		adc_init();
-		adc_input(SPEED, &updated);
+		adc_input(SPEED, &updated_msg);
 		adc_sleep();
-		int t = 1023;
 		/* Compare the two packets */
-		different = memcmp(current.data, updated.data, 8);
-		if (different) {
-			
-			/*printf("\r\nCurrent data[0] - %u",current.data[0]);
-			
-			printf("\r\nUpdated data[0] - %u",updated.data[0]);
-			*/
+		different = memcmp(current_msg.data, updated_msg.data, 8);
+		if (different) {			
 			/* Send a message with new data */
-			ret = can_packet_send(1, &updated);
-			current = updated;
+			ret = can_packet_send(1, &updated_msg);
+			current_msg = updated_msg;
 		}
+		//ret = can_packet_send(1, &updated_msg);
+		
 		if (ret) {
 			printf("\r\nMessage sent");
+			set_bit(DDRB, PB7);
 			ret = FALSE;
-		}
+		} else
+			clear_bit(DDRB, PB7);
  		//TODO: if successfully read, stop sending!
 		asm("sleep");;
 	}

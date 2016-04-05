@@ -20,7 +20,7 @@
 
 void spi_init_master( void);
 void spi_init_slave( void);
-void spi_master_tx(char c);
+void spi_master_tx(unsigned char c);
 char spi_slave_rx( void);
 
 

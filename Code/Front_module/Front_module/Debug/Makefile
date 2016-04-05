@@ -41,6 +41,7 @@ C_SRCS +=  \
 ../front_module.c \
 ../main.c \
 ../spic.c \
+../timer0.c \
 ../USART.c
 
 
@@ -55,6 +56,7 @@ can.o \
 front_module.o \
 main.o \
 spic.o \
+timer0.o \
 USART.o
 
 OBJS_AS_ARGS +=  \
@@ -62,6 +64,7 @@ can.o \
 front_module.o \
 main.o \
 spic.o \
+timer0.o \
 USART.o
 
 C_DEPS +=  \
@@ -69,6 +72,7 @@ can.d \
 front_module.d \
 main.d \
 spic.d \
+timer0.d \
 USART.d
 
 C_DEPS_AS_ARGS +=  \
@@ -76,6 +80,7 @@ can.d \
 front_module.d \
 main.d \
 spic.d \
+timer0.d \
 USART.d
 
 OUTPUT_FILE_PATH +=Front_module.elf
@@ -92,6 +97,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
