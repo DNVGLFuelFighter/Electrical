@@ -19,22 +19,19 @@
 #include "definitions.h"
 
 #define ID_INIT				404
-#define ID_brakes			1
-#define ID_H2				6
-#define ID_motorOnOff		7
-#define ID_ESOutside		8
-#define ID_ESInside			9
-#define ID_SDRelay			11
+#define ID_brakes			3
+#define ID_steeringWheel	5
+#define ID_dashboard		6
 
-#define ID_hallSensor		23
-#define ID_steeringWheel	31
-#define ID_screen			41
-#define ID_backCamera		42
-#define ID_GPS_IMU_SD		51
-#define ID_3G				61
-#define ID_lightShow		80
+
 #define ID_lightsFront		81
 #define ID_lightsBack		91
+
+#define MASK_MOTOR_MODULE	1
+#define MASK_BACK_LIGHTS	2
+#define MASK_FRONT_MODULE	4
+#define MASK_FRONT_LIGHTS	4
+
 
 
 

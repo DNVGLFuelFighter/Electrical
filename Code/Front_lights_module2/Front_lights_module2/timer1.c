@@ -63,21 +63,18 @@ void TIM16_WriteTCNT1(unsigned int i) {
 
 
 ISR(TIMER1_OVF_vect) {
-	printf(("\r\nTimer1 overflow"));
-	if (IND_LEFT) {
+	if (EMERG) {
+		front_toggle_ind_left();
+		front_toggle_ind_right();
+	}
+	if ((!EMERG) & IND_LEFT) {
 		// toggle the left indicator
-		if (get_ind_left())
-			front_lights_turn_left(FALSE);
-		else
-			front_lights_turn_left(TRUE);
+		front_toggle_ind_left();
 	} else
-	front_lights_turn_left(FALSE);
-	if (IND_RIGHT) {
+		front_lights_turn_left(FALSE);
+	if ((!EMERG) & IND_RIGHT) {
 		// toggle the right indicator
-		if (get_ind_right())
-			front_lights_turn_right(FALSE);
-		else
-			front_lights_turn_right(TRUE);
+		front_toggle_ind_right();
 	} else
-	front_lights_turn_right(FALSE);
+		front_lights_turn_right(FALSE);
 }

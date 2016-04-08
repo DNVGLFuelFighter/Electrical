@@ -120,7 +120,34 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="can.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="can.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="dashboard_module.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="dashboard_module.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="definitions.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="USART.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="USART.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

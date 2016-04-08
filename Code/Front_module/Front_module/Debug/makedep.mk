@@ -12,5 +12,9 @@ spic.c
 
 timer0.c
 
+timer1.c
+
+timer2.c
+
 USART.c
 

@@ -9,7 +9,7 @@
 #ifndef DASHBOARD_MODULE_H_
 #define DASHBOARD_MODULE_H_
 
-
+void db_init( void);
 
 
 

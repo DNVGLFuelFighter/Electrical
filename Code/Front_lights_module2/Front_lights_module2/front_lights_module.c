@@ -7,6 +7,7 @@
 
 #include "front_lights_module.h"
 
+BOOL EMERG = FALSE;
 BOOL IND_LEFT = FALSE;
 BOOL IND_RIGHT = FALSE;
 BOOL EYEBROWS_ON = FALSE;
@@ -95,25 +96,44 @@ void front_lights_turn_right( BOOL on) {
 
 void front_light_handler(CAN_packet *p, unsigned char mob) {
 	(void)mob;
+	if (p->id == ID_dashboard) {
+		/* Headlights near and far */
+		if (p->data[0] & HEADLIGHTS_NEAR)
+			front_lights_headlights(HEADLIGHT_POWER_LIMIT/2);
+		else if (p->data[0] & HEADLIGHTS_FAR)
+			front_lights_headlights(HEADLIGHT_POWER_LIMIT);
+		else front_lights_headlights(0);
+		/* Eyebrows */
+		front_lights_eyebrows(p->data[0] & EYEBROWS);
+		/* Angel eyes */
+		front_lights_angel_eyes(p->data[0] & ANGEL_EYES);
+		/* Emergency lights */
+		front_emergency(p->data[7] & EMERGENCY);
+	} else if (p->id == ID_steeringWheel) {
+		/* Right turn signal */
+		front_ind_right(p->data[0] & INDICATOR_RIGHT);
 	
-	/* Headlights near and far */
-	if (p->data[0] & HEADLIGHTS_NEAR)
-		front_lights_headlights(HEADLIGHT_POWER_LIMIT/2);
-	else if (p->data[0] & HEADLIGHTS_FAR)
-		front_lights_headlights(HEADLIGHT_POWER_LIMIT);
-	else front_lights_headlights(0);
-	
-	/* Eyebrows */
-	front_lights_eyebrows(p->data[0] & EYEBROWS);
-	
-	/* Right turn signal */
-	front_ind_right(p->data[0] & INDICATOR_RIGHT);
-	
-	/* Left turn signal */
-	front_ind_left(p->data[0] & INDICATOR_LEFT);
-	
-	/* Angel eyes */
-	front_lights_angel_eyes(p->data[0] & ANGEL_EYES);
+		/* Left turn signal */
+		front_ind_left(p->data[0] & INDICATOR_LEFT);
+	}
+}
+
+void front_toggle_ind_left( void) {
+	if (get_ind_left())
+		front_lights_turn_left(FALSE);
+	else
+		front_lights_turn_left(TRUE);
+}
+
+void front_toggle_ind_right( void) {
+	if (get_ind_right())
+	front_lights_turn_right(FALSE);
+	else
+	front_lights_turn_right(TRUE);
+}
+
+void front_emergency( BOOL on) {
+	EMERG = on;
 }
 
 void front_ind_left( BOOL on) {

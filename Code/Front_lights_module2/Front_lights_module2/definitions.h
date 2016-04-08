@@ -27,10 +27,11 @@ typedef char BOOL;
 // Used in front_light_handler()
 #define INDICATOR_RIGHT			0b1
 #define INDICATOR_LEFT			0b10
-#define HEADLIGHTS_NEAR			0b100
-#define HEADLIGHTS_FAR			0b1000
-#define ANGEL_EYES				0b10000
-#define EYEBROWS				0b100000
+#define HEADLIGHTS_NEAR			0b1
+#define HEADLIGHTS_FAR			0b10
+#define ANGEL_EYES				0b100
+#define EYEBROWS				0b1000
+#define EMERGENCY				0b10000
 
 //sets bit "bit" in register "reg"
 #define set_bit(reg, bit)		(reg |= (1<<bit))

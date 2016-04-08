@@ -31,7 +31,7 @@ int main(void)
 
 	inits();
 	
-	ret = prepare_rx(0, ID_steeringWheel, 0xff, front_light_handler);
+	ret = prepare_rx(0, ID_steeringWheel, MASK_FRONT_LIGHTS, front_light_handler);
 	
 	/* Set global interrupts */
 	sei();

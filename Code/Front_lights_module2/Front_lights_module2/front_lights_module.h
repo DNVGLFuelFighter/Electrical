@@ -28,7 +28,7 @@ typedef struct {
 
 #define HEADLIGHT_POWER_LIMIT	210
 
-
+extern BOOL EMERG;
 extern BOOL IND_LEFT;
 extern BOOL IND_RIGHT;
 
@@ -88,5 +88,13 @@ void front_ind_left( BOOL on);
 	\param on TRUE to turn on, FALSE to turn off
 */
 void front_ind_right( BOOL on);
+
+/*! Turn on the emergency ind lights 
+	\param on TRUE to turn on, FALSE to turn off
+*/
+void front_emergency( BOOL on);
+
+void front_toggle_ind_left( void);
+void front_toggle_ind_right( void);
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */

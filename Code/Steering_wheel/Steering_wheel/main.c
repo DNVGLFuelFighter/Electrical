@@ -22,11 +22,6 @@ void inits( void) {
 	set_bit(DDRB, PB6);
 }
 
-void response(CAN_packet* p, unsigned int mob) {
-	(void)mob;
-	printf("\r\nReceived");
-}
-
 int main(void)
 {
 	int different;

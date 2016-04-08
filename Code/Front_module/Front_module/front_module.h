@@ -15,7 +15,7 @@
 
 #include "spi.h"
 #include "can.h"
-//#include "timer0.h"
+#include "timer1.h"
 
 
 #define OUT_E	0b00100110
@@ -27,11 +27,15 @@ extern BOOL WIPERS_ON;
 extern BOOL FANS_ON;
 
 void fm_init( void);
+void fm_horn_init( void);
+void fm_wiper_init( void);
+void fm_fans_init( void);
 void fm_horn(float voltage);
 void fm_wiper(float voltage);
 void fm_fans(float voltage);
 int fm_voltage_to_DAC(float voltage);
 void fm_brake( CAN_packet* p);
 void fm_handler(CAN_packet* p, unsigned char mob);
+void fm_wiper_routine( void);
 
 #endif /* FRONT_MODULE_H_ */

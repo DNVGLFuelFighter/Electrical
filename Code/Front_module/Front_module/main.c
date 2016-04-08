@@ -21,9 +21,11 @@ void inits( void) {
 	can_init();
 	fm_init();
 	timer0_init();
+	timer1_init();
 
 	printf("\r\nInitialization done");
 	set_bit(DDRB, PB6);
+	sei();
 }
 
 int main(void) {
@@ -36,10 +38,9 @@ int main(void) {
 	msg_old.length = 1;
 	msg_new.id = ID_brakes;
 	msg_new.length = 1;
-	
+
 	inits();
-	prepare_rx(1, ID_steeringWheel, 0xff, fm_handler);
-	sei();
+	prepare_rx(1, ID_steeringWheel, MASK_FRONT_MODULE, fm_handler);
 	
 	fm_brake(&msg_old);
 	fm_brake(&msg_new);
