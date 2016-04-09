@@ -10,5 +10,7 @@ main.c
 
 spic.c
 
+timer3.c
+
 USART.c
 

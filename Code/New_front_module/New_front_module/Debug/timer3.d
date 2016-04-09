@@ -1,4 +1,4 @@
-front_module.d front_module.o: .././front_module.c .././front_module.h \
+timer3.d timer3.o: .././timer3.c .././timer3.h .././front_module.h \
  .././definitions.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -22,6 +22,8 @@ front_module.d front_module.o: .././front_module.c .././front_module.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h
+
+.././timer3.h:
 
 .././front_module.h:
 

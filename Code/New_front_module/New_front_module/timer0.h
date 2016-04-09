@@ -14,10 +14,6 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-extern unsigned char OVF_CNT;
-
 void timer0_init( void);
-
-
 
 #endif /* TIMER0_H_ */

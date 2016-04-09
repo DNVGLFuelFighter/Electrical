@@ -7,8 +7,6 @@
 
 #include "timer3.h"
 
-
-
 void timer3_init( void) {
 	/*
 	* Timer3, output compare B, clear on match, set on top
@@ -19,8 +17,8 @@ void timer3_init( void) {
 	TCCR3B = (1 << WGM33) | (1 << WGM32);
 	TCCR3C = 0;
 	
-	uint16_t duty = 19999 - 1024;
-	OCR3A = 19999;
+	uint16_t duty = 3500 - 1500;
+	OCR3A = 3500;
 	OCR3B = duty;
 	
 	DDRE |= (1<<DDE4);

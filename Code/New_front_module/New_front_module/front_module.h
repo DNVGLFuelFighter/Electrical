@@ -18,10 +18,13 @@
 #include "can.h"
 #include "timer0.h"
 
-
 extern BOOL HORN_ON;
 extern BOOL WIPERS_ON;
 extern BOOL FANS_ON;
+extern BOOL	CW;
+extern BOOL CCW;
+extern unsigned char OVF_CNT;
+
 
 #define OUT_E	0b00100110
 #define OUT_F	0b00101110
@@ -36,5 +39,7 @@ void fm_brake_watcher(CAN_packet *p, CAN_packet *r);
 void fm_horn( float voltage);
 void fm_wipers( float voltage);
 int fm_voltage_to_DAC( float voltage);
+void fm_wipers_duty( int duty);
+
 
 #endif /* FRONT_MODULE_H_ */

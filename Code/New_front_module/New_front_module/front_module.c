@@ -10,6 +10,9 @@
 BOOL HORN_ON = FALSE;
 BOOL WIPERS_ON = FALSE;
 BOOL FANS_ON = FALSE;
+BOOL CW = TRUE;
+BOOL CCW = FALSE;
+int duty = 1500;
 
 void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 	(void)mob;
@@ -37,7 +40,7 @@ void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 
 void fm_horn_handler( void) {
 	if(HORN_ON) {
-		fm_horn(11);
+		fm_horn(11); // 12 VDC
 	} else {
 		fm_horn(0);
 	}
@@ -45,18 +48,35 @@ void fm_horn_handler( void) {
 
 void fm_wipers_handler( void) {
 	if(WIPERS_ON) {
-		fm_wipers(5);
-	} else {
+		fm_wipers(5); // 6 VDC
+		if(CW) {
+			CCW = FALSE;
+			if(duty < 2200) {
+				duty = duty+10;
+			} else {
+				CW = FALSE;
+				CCW = TRUE;
+			}
+		}
+		if (CCW) {
+			CW = FALSE;
+			if(duty > 1500) {
+				duty = duty-10;
+			} else {
+				CW = TRUE;
+				CCW = FALSE;
+			}
+		}	
+		fm_wipers_duty(duty);	
+	} else
 		fm_wipers(0);
+}
+
+void fm_wipers_duty(int duty) {
+	if(duty > 800 && duty <2200) {
+		cli();
+		OCR3B = 3500 - duty;
 	}
-}
-
-void fm_wipers_CW( ) {
-	
-}
-
-void fm_wipers_CCW( void) {
-	
 }
 
 void fm_fans_handler( void) {
@@ -66,6 +86,7 @@ void fm_fans_handler( void) {
 		
 	}
 }
+
 void fm_brake_watcher(CAN_packet* msg_old, CAN_packet* msg_new){
 	BOOL ret;
 	if(test_bit(PINE, PINE5))
@@ -94,6 +115,7 @@ void fm_horn_init( void) {
 void fm_wiper_init( void) {
 	/* Set PB4 as output */
 	set_bit(DDRB, DDB4);
+	clear_bit(PORTB, PB4);
 }
 
 void fm_fans_init( void) {
