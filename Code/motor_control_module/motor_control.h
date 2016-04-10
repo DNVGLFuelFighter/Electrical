@@ -30,8 +30,8 @@
 typedef struct{
 	uint8_t percentage; //Values 0-100 	 	=> 7bit
 	uint8_t temp; 		//Values 0-100   	=> 7bit
-	uint16_t rpm; 		//values 0-10000 	=> 14bit (maybe 13bit is enough)
 	uint8_t voltage; 	//Values 12.0-50.0  =>  (with 0.1 precision) 
+	uint16_t rpm; 		//values 0-10000 	=> 14bit (maybe 13bit is enough)
 } esc;
 
 extern uint16_t tar_speed;
@@ -57,6 +57,10 @@ void decode_screen(void);
 void set_speed(uint16_t target);	
 /* Function called on can receive package  */
 void can_recv(CAN_packet *p, unsigned char mob);
+/* Send telemetry data from esc to can */
+void can_send(void);
+/* Timer for sending can message every x seconds */
+void timer_init(void);
 
 
 

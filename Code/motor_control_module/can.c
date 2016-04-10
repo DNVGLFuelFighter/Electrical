@@ -127,12 +127,10 @@ void can_init( void)
 	unsigned mob;
 //! \bug different baud rate support not implemented yet 
 #if F_CPU == 8000000
-
 	//Old implementation
 	CANBT1=0x06;	// 8MHz, 100kbit/s
 	CANBT2=0x0c;
 	CANBT3=0x5a;
-
 	/* 
 	//New implementation 	
 	CANBT1 = 0x12;	// 8MHz, 100kbit/s
@@ -143,7 +141,6 @@ void can_init( void)
 	CANBT2=0x04;
 	CANBT3=0x13;
 #endif
-	
 	for (mob = 0; mob < NO_MOBS; mob++)
 		{
 		CANPAGE  = (mob << 4);

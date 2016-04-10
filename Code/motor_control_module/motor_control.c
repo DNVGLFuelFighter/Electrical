@@ -27,9 +27,11 @@ void init(void){
 	//Can setup
 	//TODO id of package and mask for can
 	can_init();
-	prepare_rx(0, 5, 0xFF, can_recv);
+	prepare_rx(0, ID_steeringWheel, 0xff, can_recv);
 	//Onboard led init
 	RGB_init();
+	//Timer for sending can
+	timer_init();
 	sei();
 }
 
@@ -37,8 +39,8 @@ void init(void){
 void pwm_init(void){
 	/*
 	 * Timer3, output compare B, clear on match, set on top
-	 * Prescaler = 8Mhz / 8 (fuse) / 1 (timer prescaler)
-	 * mode = 15 (fast pwm with top on :q
+	 * Prescaler = 8Mhz / 1 (fuse) / 8 (timer prescaler)
+	 * mode = 15 (fast pwm with top on)
 	 * ocr3a
 	 * */
 	TCCR3A = (1 << COM3B1) | (1 << COM3B0) | (1 << WGM31) | (1 << WGM30);
@@ -120,12 +122,12 @@ void decode_screen(){
 	memcpy(tmpstr, &screen[27], 3);
 	tmpstr[3] = '\0';
 	myesc.temp = atoi(tmpstr);
-	printf("----------\n\r");
+	/*printf("----------\n\r");
 	printf("Perc: %d\n\r", myesc.percentage);
 	printf("rpm : %d\n\r", myesc.rpm);
 	printf("volt: %d\n\r", myesc.voltage);
 	printf("temp: %d\n\r", myesc.temp);
-
+*/
 	RGB_led_off(LED_BLUE);
 }
 
@@ -150,3 +152,37 @@ void can_recv(CAN_packet *p, unsigned char mob){
 	printf("Package received: %d\n\r", tar_speed);
 }
 
+/* Send telemetry data from esc to can */
+//TODO make a timer to send this every x seconds =)
+void can_send(){
+	CAN_packet msg;
+	msg.id = ID_esc_telemetry;
+	msg.length = 5;
+	msg.data[0] = myesc.percentage;
+	msg.data[1] = myesc.temp;
+	msg.data[2] = myesc.voltage;
+	msg.data[3] = (uint8_t) (myesc.rpm >> 8);
+	msg.data[4] = (uint8_t) (myesc.rpm);
+	can_packet_send(4, &msg);
+}
+
+/* Timer for sending can message every x seconds */
+void timer_init(){
+	//1024prescaler -> 128us
+	TCCR1A = 0;
+	TCCR1B = (1<<WGM12);
+	TCCR1C = 0;
+	TIMSK1 = (1 << OCIE1A);
+
+
+	OCR1A = 15625; //2s 	
+
+	TCCR1B |= (1<<CS10) | (1<<CS12); 
+}
+
+ISR(TIMER1_COMPA_vect){
+	cli();
+	printf("Sending package\n\r");
+	can_send();
+	sei();
+}
