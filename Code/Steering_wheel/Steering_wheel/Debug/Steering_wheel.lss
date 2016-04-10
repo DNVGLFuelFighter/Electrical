@@ -661,13 +661,13 @@ int main(void)
      41c:	30 e0       	ldi	r19, 0x00	; 0
      41e:	3a 83       	std	Y+2, r19	; 0x02
      420:	29 83       	std	Y+1, r18	; 0x01
-	current_msg.length = 2;
-     422:	82 e0       	ldi	r24, 0x02	; 2
+	current_msg.length = 6;
+     422:	86 e0       	ldi	r24, 0x06	; 6
      424:	8b 83       	std	Y+3, r24	; 0x03
 	updated_msg.id = ID_steeringWheel;
      426:	3d 87       	std	Y+13, r19	; 0x0d
      428:	2c 87       	std	Y+12, r18	; 0x0c
-	updated_msg.length = 2;
+	updated_msg.length = 6;
      42a:	8e 87       	std	Y+14, r24	; 0x0e
 	sw_input(&current_msg);
      42c:	ce 01       	movw	r24, r28

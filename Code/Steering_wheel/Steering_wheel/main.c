@@ -38,9 +38,9 @@ int main(void)
 	
 	/* Initialize packets */
 	current_msg.id = ID_steeringWheel;
-	current_msg.length = 2;
+	current_msg.length = 6;
 	updated_msg.id = ID_steeringWheel;
-	updated_msg.length = 2;
+	updated_msg.length = 6;
 	sw_input(&current_msg);
 	sw_input(&updated_msg);
 	adc_input(&current_msg);
