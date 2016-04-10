@@ -298,7 +298,7 @@ MSG_CLEANING = Cleaning project:
 
 # Define all object files.
 OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) 
-OBJ = can.o main.o USART.o universal_module.o
+OBJ = can.o main.o USART.o universal_module.o motor_control.o
 
 
 # Define all listing files.
