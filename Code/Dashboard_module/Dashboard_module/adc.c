@@ -27,26 +27,13 @@ void adc_sleep( void) {
 	clear_bit(ADCSRA, ADEN);
 }
 
-void adc_input( CAN_packet* p) {
+void adc_input(CAN_packet* p) {
 	/*Select the reference channel */
 	ADMUX |= 0x00;
 	/* Start the conversion */
 	set_bit(ADCSRA, ADSC);
 	/* Wait for the conversion to complete */
 	while(test_bit(ADCSRA, ADSC));
-	double full_value = (double)ADC;
-	double temp_val = 0.0;
-	BOOL value_over_half = FALSE;
-	temp_val = full_value/4.0;
-	if(temp_val>=(floor(temp_val) + 0.5)){
-			value_over_half = TRUE;
-	}
-	p->data[2] = (int)ceil(temp_val);
-	p->data[3] = (int)floor(temp_val);
-	p->data[4] = (int)floor(temp_val);
-	p->data[5] = (int)floor(temp_val);
-	if(value_over_half)
-		p->data[3] = (int)ceil(temp_val);
 	p->data[1] = (ADC>>2); // left shift to fit into 8-bit msg
 }
 

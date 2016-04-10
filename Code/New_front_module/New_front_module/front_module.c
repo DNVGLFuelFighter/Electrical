@@ -89,16 +89,18 @@ void fm_fans_handler( void) {
 
 void fm_brake_watcher(CAN_packet* msg_old, CAN_packet* msg_new){
 	BOOL ret;
+	msg_new->data[0] = 0;
 	if(test_bit(PINE, PINE5))
 		msg_new->data[0] = 1;
-	int different = memcmp(msg_new->data, msg_new->data, 8);
+	int different = memcmp(msg_new->data, msg_old->data, 8);
 	if(different) {
 		ret = can_packet_send(0, msg_new);
 		msg_old = msg_new;
 	} else
 		ret = FALSE;
-	if(ret)
+	if(ret) {
 		set_bit(DDRB, PB7);
+	}
 	else
 		clear_bit(DDRB, PB7);
 }

@@ -19,6 +19,7 @@ void inits( void) {
 	sw_init();
 	adc_init();
 	printf("\r\nInitialization complete");
+	sei();
 	set_bit(DDRB, PB6);
 }
 
@@ -37,27 +38,27 @@ int main(void)
 	
 	/* Initialize packets */
 	current_msg.id = ID_steeringWheel;
-	current_msg.length = 1;
+	current_msg.length = 2;
 	updated_msg.id = ID_steeringWheel;
-	updated_msg.length = 1;
+	updated_msg.length = 2;
 	sw_input(&current_msg);
 	sw_input(&updated_msg);
-	adc_input(SPEED, &current_msg);
-	adc_input(SPEED, &updated_msg);
+	adc_input(&current_msg);
+	adc_input(&updated_msg);
 	adc_sleep();
 	
-	updated_msg.data[0] = 0b010000;
     for(;;) {
 		
 		/* Update one CAN_packet */
 		sw_input(&updated_msg); 
 		adc_init();
-		adc_input(SPEED, &updated_msg);
+		adc_input(&updated_msg);
 		adc_sleep();
 		/* Compare the two packets */
 		different = memcmp(current_msg.data, updated_msg.data, 8);
 		if (different) {			
 			/* Send a message with new data */
+			printf("\r\nData sent - %d", updated_msg.data[1]);
 			ret = can_packet_send(1, &updated_msg);
 			current_msg = updated_msg;
 		}

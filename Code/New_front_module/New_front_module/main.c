@@ -13,13 +13,9 @@
 #include "can.h"
 #include "USART.h"
 #include "front_module.h"
-//----------------------------------
-// #include "timer0.h" // 8 bit timers
-// #include "timer2.h"	
-// // ---------------------------------
-// #include "timer1.h" // 16 bit timers
-#include "timer3.h"	//	
-// ---------------------------------
+
+// 16 bit timers
+#include "timer3.h"	
 
 void inits( void);
 
@@ -41,7 +37,7 @@ int main(void)
 		fm_wipers_handler();
 		fm_fans_handler();
 		fm_brake_watcher(&msg_old, &msg_new);
-		asm("sleep");;
+		asm("sleep");
 	}
 	return 0;
 }
@@ -56,4 +52,3 @@ void inits( void) {
 	printf("\r\nInitialization done");
 	sei();
 }
-

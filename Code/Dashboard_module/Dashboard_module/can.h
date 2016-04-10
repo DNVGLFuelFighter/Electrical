@@ -23,7 +23,6 @@
 #define ID_steeringWheel	5
 #define ID_dashboard		6
 
-
 #define ID_lightsFront		81
 #define ID_lightsBack		91
 

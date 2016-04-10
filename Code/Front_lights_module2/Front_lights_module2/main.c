@@ -23,6 +23,8 @@ void inits(void) {
 	timer1_init();
 	
 	printf("\r\nInitialization complete");
+	set_bit(DDRB, DDB6);
+	clear_bit(PORTB, PB6);
 }
 
 int main(void)

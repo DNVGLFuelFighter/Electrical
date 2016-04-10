@@ -20,9 +20,6 @@
 #include <avr/io.h>
 #include "can.h"
 
-#define SPEED	0
-#define FANS	1
-
 /*! Initialize 10-bit adc */
 void adc_init( void);
 /*! Put the adc to sleep when not needed to save power */

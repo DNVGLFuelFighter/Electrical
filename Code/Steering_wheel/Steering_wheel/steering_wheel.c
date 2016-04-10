@@ -7,9 +7,6 @@
 
 #include "steering_wheel.h"
 
-CAN_packet current;
-CAN_packet updated;
-
 void sw_init( void) {	
 	/* Indicators init */
 	/* Set PE3 and PE4 as inputs */
@@ -19,7 +16,7 @@ void sw_init( void) {
 	set_bit(PORTE, PE3);
 	set_bit(PORTE, PE4);	
 	
-	/* Whiper init */
+	/* Wipers init */
 	clear_bit(DDRE, DDE5);
 	set_bit(PORTE, PE5);
 	

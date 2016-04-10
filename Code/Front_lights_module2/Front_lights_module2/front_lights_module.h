@@ -96,5 +96,7 @@ void front_emergency( BOOL on);
 
 void front_toggle_ind_left( void);
 void front_toggle_ind_right( void);
+BOOL get_ind_left( void);
+BOOL get_ind_right( void);
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */
