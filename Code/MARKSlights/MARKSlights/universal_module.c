@@ -25,19 +25,20 @@ void RGB_init(){
  * Turn on led.
  * 	@arg: pin number (only accepts pb5, pb6 or pb7)
  *************/
-void RGB_led_on(int num){
-	if(num == PB5 || num == PB6 || num == PB7){
-		PORTB &= ~(1 << num); 
-	}
-}
-/*************
- * Turn off led.
- * 	@arg: pin number (only accepts pb5, pb6 or pb7)
- *************/
 void RGB_led_off(int num){
 	if(num == PB5 || num == PB6 || num == PB7){
 		PORTB |= (1 << num); 
 	}	
+}
+
+/*************
+ * Turn off led.
+ * 	@arg: pin number (only accepts pb5, pb6 or pb7)
+ *************/
+void RGB_led_on(int num){
+	if(num == PB5 || num == PB6 || num == PB7){
+		PORTB &= ~(1 << num); 
+	}
 }
 /*************
  * Toggle led.

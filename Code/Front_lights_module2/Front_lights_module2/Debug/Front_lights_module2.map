@@ -554,8 +554,9 @@ END GROUP
  *(.bss*)
  .bss.packet.1825
                 0x00800132        0xb can.o
- .bss.EYEBROWS  0x0080013d        0x1 front_lights_module.o
-                0x0080013d                EYEBROWS
+ .bss.EYEBROWS_ON
+                0x0080013d        0x1 front_lights_module.o
+                0x0080013d                EYEBROWS_ON
  .bss.IND_RIGHT
                 0x0080013e        0x1 front_lights_module.o
                 0x0080013e                IND_RIGHT
@@ -676,32 +677,32 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x102b
+.debug_info     0x00000000     0x101f
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x30f can.o
  .debug_info    0x0000030f      0x552 front_lights_module.o
- .debug_info    0x00000861      0x236 main.o
- .debug_info    0x00000a97       0xb9 timer0.o
- .debug_info    0x00000b50      0x298 timer1.o
- .debug_info    0x00000de8      0x243 USART.o
+ .debug_info    0x00000861      0x22a main.o
+ .debug_info    0x00000a8b       0xb9 timer0.o
+ .debug_info    0x00000b44      0x298 timer1.o
+ .debug_info    0x00000ddc      0x243 USART.o
 
-.debug_abbrev   0x00000000      0x890
+.debug_abbrev   0x00000000      0x883
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x18d can.o
  .debug_abbrev  0x0000018d      0x23d front_lights_module.o
- .debug_abbrev  0x000003ca      0x166 main.o
- .debug_abbrev  0x00000530       0x7a timer0.o
- .debug_abbrev  0x000005aa      0x181 timer1.o
- .debug_abbrev  0x0000072b      0x165 USART.o
+ .debug_abbrev  0x000003ca      0x159 main.o
+ .debug_abbrev  0x00000523       0x7a timer0.o
+ .debug_abbrev  0x0000059d      0x181 timer1.o
+ .debug_abbrev  0x0000071e      0x165 USART.o
 
-.debug_line     0x00000000      0xc79
+.debug_line     0x00000000      0xc78
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x37e can.o
- .debug_line    0x0000037e      0x3f6 front_lights_module.o
- .debug_line    0x00000774      0x12e main.o
- .debug_line    0x000008a2       0xd1 timer0.o
- .debug_line    0x00000973      0x1b1 timer1.o
- .debug_line    0x00000b24      0x155 USART.o
+ .debug_line    0x0000037e      0x3f5 front_lights_module.o
+ .debug_line    0x00000773      0x12e main.o
+ .debug_line    0x000008a1       0xd1 timer0.o
+ .debug_line    0x00000972      0x1b1 timer1.o
+ .debug_line    0x00000b23      0x155 USART.o
 
 .debug_frame    0x00000000      0x378
  *(.debug_frame)
@@ -712,19 +713,19 @@ END GROUP
  .debug_frame   0x00000274       0xa4 timer1.o
  .debug_frame   0x00000318       0x60 USART.o
 
-.debug_str      0x00000000      0x486
+.debug_str      0x00000000      0x484
  *(.debug_str)
  .debug_str     0x00000000      0x1e9 can.o
                                 0x233 (size before relaxing)
- .debug_str     0x000001e9      0x174 front_lights_module.o
-                                0x31a (size before relaxing)
- .debug_str     0x0000035d       0x39 main.o
-                                0x20c (size before relaxing)
- .debug_str     0x00000396       0x31 timer0.o
+ .debug_str     0x000001e9      0x177 front_lights_module.o
+                                0x31d (size before relaxing)
+ .debug_str     0x00000360       0x34 main.o
+                                0x207 (size before relaxing)
+ .debug_str     0x00000394       0x31 timer0.o
                                 0x1bb (size before relaxing)
- .debug_str     0x000003c7       0x54 timer1.o
+ .debug_str     0x000003c5       0x54 timer1.o
                                 0x253 (size before relaxing)
- .debug_str     0x0000041b       0x6b USART.o
+ .debug_str     0x00000419       0x6b USART.o
                                 0x202 (size before relaxing)
 
 .debug_loc      0x00000000      0xa2b

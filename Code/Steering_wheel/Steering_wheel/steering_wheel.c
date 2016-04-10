@@ -7,7 +7,6 @@
 
 #include "steering_wheel.h"
 
-
 CAN_packet current;
 CAN_packet updated;
 
