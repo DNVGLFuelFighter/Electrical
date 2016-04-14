@@ -9,32 +9,30 @@
 
 BOOL HORN_ON = FALSE;
 BOOL WIPERS_ON = FALSE;
-BOOL FANS_ON = FALSE;
+int FANS_VAL = 0;
 BOOL CW = TRUE;
 BOOL CCW = FALSE;
 int duty = 1500;
 
 void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 	(void)mob;
-	printf("\r\nMessage received");
+	printf("\r\np->data[1] %u", p->data[1]);
 	switch(p->id) {
 		case ID_steeringWheel:
-			if(p->data[0] & (1<<4)) {
+			if(p->data[0] & (1<<4))
 				HORN_ON = TRUE;
-			}
 			else
 				HORN_ON = FALSE;
-			if (p->data[0] & (1<<5)) {
+			if (p->data[0] & (1<<5))
 				WIPERS_ON = TRUE;
-			}
 			else
 				WIPERS_ON = FALSE;
 			break;
 		case ID_dashboard:
-			if(p->data[0] & (1<<5))
-				FANS_ON = TRUE;
+			if(p->data[1] > 2)
+				FANS_VAL = p->data[1];
 			else
-				FANS_ON = FALSE;
+				FANS_VAL = 0;
 	}
 }
 
@@ -76,14 +74,35 @@ void fm_wipers_duty(int duty) {
 	if(duty > 800 && duty <2200) {
 		cli();
 		OCR3B = 3500 - duty;
+		sei();
 	}
 }
 
 void fm_fans_handler( void) {
-	if(FANS_ON){
-
+	if(FANS_VAL > 5){
+		fm_fans(FANS_VAL);
+// 		fm_fans(11); // 6 VDC 
+// 		if(CW) {
+// 			CCW = FALSE;
+// 			if(duty < 2200) {
+// 				duty = duty+10;
+// 				} else {
+// 				CW = FALSE;
+// 				CCW = TRUE;
+// 			}
+// 		}
+// 		if (CCW) {
+// 			CW = FALSE;
+// 			if(duty > 1500) {
+// 				duty = duty-10;
+// 				} else {
+// 				CW = TRUE;
+// 				CCW = FALSE;
+// 			}
+// 		}
+// 		fm_wipers_duty(duty);
 	} else {
-		
+		fm_fans(0);
 	}
 }
 
@@ -133,7 +152,6 @@ void fm_init( void) {
 void fm_horn(float voltage) {
 	if (voltage > 12) {
 		voltage = 12;
-		//set_bit(PORTD, PD0);
 	}
 	if (voltage < 3) {
 		/* Turn off the horn */
@@ -145,6 +163,34 @@ void fm_horn(float voltage) {
 		DAC_DESELECT;
 		
 		set_bit(PORTD, PD0);
+	}
+}
+
+void fm_fans(float voltage) {
+	if(voltage < 5) {
+		clear_bit(PORTE, PE3);
+		return;
+	}
+	float val = voltage;
+	// low - 215, high - 141
+	if(val < 80)
+		val = 80;
+	val = 210-0.39*(val-80);
+	
+	if (val < 141) {
+		val = 141;
+	}
+	if (val > 250) {
+		/* Turn off the fans */
+		clear_bit(PORTE, PE3);
+	} else {
+		printf("\r\nval %d",(int)val);
+		DAC_SELECT;
+		spi_master_tx(OUT_G);
+		spi_master_tx((int)val);
+		DAC_DESELECT;
+		
+		set_bit(PORTE, PE3);
 	}
 }
 

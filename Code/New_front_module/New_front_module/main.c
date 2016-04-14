@@ -47,6 +47,7 @@ void inits( void) {
 	can_init();
 	spi_init_master();
 	fm_init();
+	
 	//TODO: RUN timer3_init();
 	prepare_rx(1, ID_steeringWheel, MASK_FRONT_MODULE, fm_msg_handler);
 	printf("\r\nInitialization done");

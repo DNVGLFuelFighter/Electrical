@@ -36,8 +36,3 @@ void adc_input(CAN_packet* p) {
 	while(test_bit(ADCSRA, ADSC));
 	p->data[1] = (ADC>>2); // left shift to fit into 8-bit msg
 }
-
-/*! ADC conversion complete interrupt 
-	Send a CAN message to the motor with new info 
-*/
-//ISR(ADC_vect) {}
