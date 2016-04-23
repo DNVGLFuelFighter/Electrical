@@ -26,7 +26,7 @@ typedef struct {
 	uint8_t lights_near;	
 } front_lights;
 
-#define HEADLIGHT_POWER_LIMIT	210
+#define HEADLIGHT_POWER_LIMIT	150
 
 extern BOOL EMERG;
 extern BOOL IND_LEFT;
@@ -63,12 +63,8 @@ void front_lights_turn_right( BOOL on);
 void front_lights_angel_eyes( BOOL on);
 
 /*! Flashy light show
-	\param p CAN packet
-	\param mob message object. Range 0..14
-	See "can.h" for further explanation on params
-	To turn on light show send a CAN message with ID = ID_lightShow
 */
-void light_show( CAN_packet* p, unsigned char mob);
+void light_show();
 
 /*! Main handler of all the front lights
 	\param p CAN packet
@@ -92,11 +88,14 @@ void front_ind_right( BOOL on);
 /*! Turn on the emergency ind lights 
 	\param on TRUE to turn on, FALSE to turn off
 */
-void front_emergency( BOOL on);
+BOOL get_ind_left( void);
+BOOL get_ind_right( void);
 
 void front_toggle_ind_left( void);
 void front_toggle_ind_right( void);
-BOOL get_ind_left( void);
-BOOL get_ind_right( void);
+
+void front_emergency( BOOL on);
+
+
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */

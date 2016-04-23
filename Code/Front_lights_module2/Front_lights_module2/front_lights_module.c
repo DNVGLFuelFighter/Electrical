@@ -53,13 +53,16 @@ void front_lights_headlights( int power) {
 }
 
 void front_lights_eyebrows( BOOL on) {
-	if (on & !IND_LEFT &!IND_RIGHT) {
+	if (on && !IND_LEFT && !IND_RIGHT) {
+		printf("\r\nEyebrows on");
 		set_bit(PORTF, PF1);
 		set_bit(PORTE, PE5);
+		EYEBROWS_ON = TRUE;
 		return;
 	}
 	clear_bit(PORTF, PF1);
 	clear_bit(PORTE, PE5);
+	EYEBROWS_ON = FALSE;
 }
 
 void front_lights_angel_eyes( BOOL on) {
@@ -96,20 +99,27 @@ void front_lights_turn_right( BOOL on) {
 
 void front_light_handler(CAN_packet *p, unsigned char mob) {
 	(void)mob;
+	
 	if (p->id == ID_dashboard) {
+		printf("\r\nReceived message from dashboard");
+		printf("\r\nData[0] - %d", p->data[0]);
+		printf("\r\nData[1] - %d", p->data[1]);
 		/* Headlights near and far */
 		if (p->data[0] & HEADLIGHTS_NEAR)
-			front_lights_headlights(HEADLIGHT_POWER_LIMIT/2);
+			front_lights_headlights(30);
 		else if (p->data[0] & HEADLIGHTS_FAR)
-			front_lights_headlights(HEADLIGHT_POWER_LIMIT);
+			front_lights_headlights(150);
 		else front_lights_headlights(0);
 		/* Eyebrows */
 		front_lights_eyebrows(p->data[0] & EYEBROWS);
 		/* Angel eyes */
 		front_lights_angel_eyes(p->data[0] & ANGEL_EYES);
 		/* Emergency lights */
-		front_emergency(p->data[7] & EMERGENCY);
+		front_emergency(p->data[0] & EMERGENCY);
 	} else if (p->id == ID_steeringWheel) {
+		printf("\r\nReceived message from steering wheel");
+		printf("\r\nData[0] - %d", p->data[0]);
+		printf("\r\nData[1] - %d", p->data[1]);
 		/* Right turn signal */
 		front_ind_right(p->data[0] & INDICATOR_RIGHT);
 	
@@ -127,13 +137,15 @@ void front_toggle_ind_left( void) {
 
 void front_toggle_ind_right( void) {
 	if (get_ind_right())
-	front_lights_turn_right(FALSE);
+		front_lights_turn_right(FALSE);
 	else
-	front_lights_turn_right(TRUE);
+		front_lights_turn_right(TRUE);
 }
 
 void front_emergency( BOOL on) {
 	EMERG = on;
+	IND_LEFT = on;
+	IND_RIGHT = on;
 }
 
 void front_ind_left( BOOL on) {
@@ -152,15 +164,14 @@ BOOL get_ind_right( void) {
 	return test_bit(PORTF, PF0);
 }
 
-void light_show(CAN_packet *p, unsigned char mob) {
-	(void)mob;
+void light_show() {
 	printf("\r\nPrepare for a light show");
 	int cntr = 0;
 	int off = 5;
 	while(off) {
 		switch(cntr){
 			case 1:
-			front_lights_headlights(128);
+			front_lights_headlights(50);
 			break;
 			case 2:
 			front_lights_eyebrows(TRUE);
@@ -177,7 +188,7 @@ void light_show(CAN_packet *p, unsigned char mob) {
 		}
 		toggle_bit(DDRB, PB6);
 		clear_bit(DDRB, PB5);
-		_delay_ms(500);
+		_delay_ms(5000);
 		cntr = cntr%5;
 		cntr++;
 		off--;
@@ -185,6 +196,6 @@ void light_show(CAN_packet *p, unsigned char mob) {
 		front_lights_eyebrows(FALSE);
 		front_lights_angel_eyes(FALSE);
 		front_lights_turn_left(FALSE);
-		front_lights_turn_left(FALSE);
+		front_lights_turn_right(FALSE);
 	}
 }

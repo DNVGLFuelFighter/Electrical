@@ -63,18 +63,26 @@ void TIM16_WriteTCNT1(unsigned int i) {
 
 
 ISR(TIMER1_OVF_vect) {
-	if (EMERG) {
-		front_toggle_ind_left();
-		front_toggle_ind_right();
-	}
-	if ((!EMERG) & IND_LEFT) {
+	if ((!EMERG) && IND_LEFT) {
 		// toggle the left indicator
 		front_toggle_ind_left();
 	} else
 		front_lights_turn_left(FALSE);
-	if ((!EMERG) & IND_RIGHT) {
+	if ((!EMERG) && IND_RIGHT) {
 		// toggle the right indicator
 		front_toggle_ind_right();
 	} else
 		front_lights_turn_right(FALSE);
+	if (EMERG) {
+		if(IND_LEFT) {
+			front_toggle_ind_left();
+		}
+		else
+			front_lights_turn_left(FALSE);
+		if(IND_RIGHT) {
+			front_toggle_ind_right();
+		}
+		else
+			front_lights_turn_right(FALSE);
+	}
 }

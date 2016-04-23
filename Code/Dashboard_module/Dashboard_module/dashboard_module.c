@@ -29,14 +29,16 @@ void db_init( void){
 	set_bit(PORTE, PE4);
 	
 	/* Angel eyes init */
-	clear_bit(DDRB, DDB1);
-	set_bit(PORTB, PB1);
+	clear_bit(DDRF, DDF3);
+	set_bit(PORTF, PF3);
 	
 	/* Emergency light init */
 	clear_bit(DDRE, DDE3);
 	set_bit(PORTE, PE3);
 	
-	/* Fans initializes via adc_init() */	
+	/* Fans init */	
+	clear_bit(DDRF, DDF0);
+	set_bit(PORTF, PF0);
 }
 
 void db_input( CAN_packet *p) {
@@ -48,7 +50,7 @@ void db_input( CAN_packet *p) {
 	else if (!test_bit(PIND, PD0))
 		p->data[0] |= (1<<1);
 	/* Read angel eyes */
-	if(!test_bit(PINB, PB1))
+	if(!test_bit(PINF, PF3))
 		p->data[0] |= (1<<2);
 	/* Read eyebrows */
 	if(!test_bit(PINE, PE4))
@@ -61,4 +63,7 @@ void db_input( CAN_packet *p) {
 		p->data[0] |= (1<<5);
 	else if (!test_bit(PINB, PB3))
 		p->data[0] |= (1<<6);
+	/* Read fans */
+	if (!test_bit(PORTF, PF0))
+		p->data[0] |= (1<<7); //MAX power
 }
