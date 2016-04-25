@@ -48,7 +48,7 @@ int main(void)
 	adc_sleep();
 	
     for(;;) {
-		
+		_delay_ms(100);
 		/* Update one CAN_packet */
 		sw_input(&updated_msg); 
 		adc_init();
@@ -58,7 +58,7 @@ int main(void)
 		different = memcmp(current_msg.data, updated_msg.data, 8);
 		if (different) {			
 			/* Send a message with new data */
-			printf("\r\nData sent - %d", updated_msg.data[1]);
+			printf("\r\nData[0] sent - %d", updated_msg.data[0]);
 			ret = can_packet_send(1, &updated_msg);
 			current_msg = updated_msg;
 		}

@@ -20,7 +20,7 @@
 
 extern BOOL HORN_ON;
 extern BOOL WIPERS_ON;
-extern int FANS_VAL;
+extern BOOL FANS_ON;
 extern BOOL	CW;
 extern BOOL CCW;
 extern unsigned char OVF_CNT;

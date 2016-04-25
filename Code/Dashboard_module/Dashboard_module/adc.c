@@ -28,8 +28,8 @@ void adc_sleep( void) {
 }
 
 void adc_input(CAN_packet* p) {
-	/*Select the reference channel */
-	ADMUX |= 0x00;
+	/* Select the reference channel */
+	ADMUX |= 0x00;	// fans
 	/* Start the conversion */
 	set_bit(ADCSRA, ADSC);
 	/* Wait for the conversion to complete */

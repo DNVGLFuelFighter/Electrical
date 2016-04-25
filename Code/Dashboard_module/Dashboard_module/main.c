@@ -34,17 +34,17 @@ int main(void)
 	updated_msg.length = 2;
 	db_input(&current_msg);
 	db_input(&updated_msg);
-	adc_input(&current_msg);
-	adc_input(&updated_msg);
-	adc_sleep();
+// 	adc_input(&current_msg);
+// 	adc_input(&updated_msg);
+// 	adc_sleep();
 	
     for(;;) {
-		_delay_ms(200);
 		/* Update one CAN_packet */
 		db_input(&updated_msg);
-		adc_init();
-		adc_input(&updated_msg);
-		adc_sleep();
+// 		adc_init();
+// 		adc_input(&updated_msg);
+// 		adc_sleep();
+		
 		/* Compare the two packets */
 		different = memcmp(current_msg.data, updated_msg.data, 8);
 		if (different) {
@@ -56,13 +56,12 @@ int main(void)
 		//ret = can_packet_send(1, &updated_msg);
 		
 		if (ret) {
-			printf("\r\nMessage sent");
-			printf("\r\nData[0] sent - %d", updated_msg.data[0]);
-			printf("\r\nData[1] sent - %d", updated_msg.data[1]);
 			set_bit(DDRB, PB7);
 			ret = FALSE;
-		} else
-		clear_bit(DDRB, PB7);
+		} else {
+			clear_bit(DDRB, PB7);
+			
+		}
 		asm("sleep");
 	}
 	return 0;
