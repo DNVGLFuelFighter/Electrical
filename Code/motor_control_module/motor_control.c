@@ -30,7 +30,7 @@ void init(void){
 	//Can setup
 	//TODO id of package and mask for can
 	can_init();
-	prepare_rx(0, ID_steeringWheel, 0xff, can_recv);
+	prepare_rx(0, ID_steeringWheel, MASK_MOTOR_MODULE, can_recv);
 	//Onboard led init
 	RGB_init();
 	//Timer for sending can
@@ -142,9 +142,10 @@ void set_speed(uint16_t target){
 	if(brake == 1){
 		//Braking do no trun motrs
 		OCR3B = MINSPEED; 
-	}
-	if(((MAXPWM_CNT - target) > MAXSPEED) && ((MAXPWM_CNT - target) < MINSPEED)){
-		OCR3B = MAXPWM_CNT - target;
+	}else{
+		if(((MAXPWM_CNT - target) > MAXSPEED) && ((MAXPWM_CNT - target) < MINSPEED)){
+			OCR3B = MAXPWM_CNT - target;
+		}
 	}
 }
 
@@ -153,12 +154,20 @@ void can_recv(CAN_packet *p, unsigned char mob){
 	//Parse data from message
 	//TODO do some checking of data so we don't get stupid stuff
 
-	uint8_t recv =  p->data[1] ;
+
 	printf("Package id: %d\n\r", p->id);
 	if(p->id == ID_brakes){
-		//TODO set brake variable
-		/
+		//Set brake variable
+		if(p->data[0] == 0){
+			brake = 0;
+		}else if(p->data[0] == 1){
+			brake = 1;
+		}else{
+			brake = 1;
+		}
+		printf("got brake data %d\n\r", brake);
 	}else if(p->id == ID_steeringWheel){
+		uint8_t recv =  p->data[1] ;
 		if((tar_speed + 10) < (1024 + recv*4) || (tar_speed - 10) > 1024+recv*4){
 			tar_speed = 1024 + recv*4;		
 		}
