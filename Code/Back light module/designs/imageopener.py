@@ -66,7 +66,8 @@ if  __name__ == "__main__":
             pixel_lst = sum(pixel_lst, [])
 #            print(pixel_lst)
             
-            output_image_for_eth(pixel_lst) 
+#            output_image_for_eth(pixel_lst) 
+            output_image(pixel_lst)
             im.seek(im.tell()+1)
     except EOFError:
         pass

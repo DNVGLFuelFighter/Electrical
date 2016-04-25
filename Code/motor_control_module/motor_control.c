@@ -17,7 +17,7 @@ esc myesc;
 
 
 uint8_t brake = 0; 	// 0 -> brake not pressed; 1-> brake pressed do not run motors
-
+uint8_t can_lost = 0;  // 0 -> we have can;  1 -> no can communication
 /* Init of motor control module  */
 void init(void){
 	printf("Init complete\n\r");
@@ -139,7 +139,7 @@ void decode_screen(){
 
 /* Set speed (pwm value) of motors  */
 void set_speed(uint16_t target){
-	if(brake == 1){
+	if(brake == 2){ //should be 1 
 		//Braking do no trun motrs
 		OCR3B = MINSPEED; 
 	}else{
@@ -158,6 +158,7 @@ void can_recv(CAN_packet *p, unsigned char mob){
 	printf("Package id: %d\n\r", p->id);
 	if(p->id == ID_brakes){
 		//Set brake variable
+		can_lost = 0; //saftey if can is lost we kill the motors
 		if(p->data[0] == 0){
 			brake = 0;
 		}else if(p->data[0] == 1){
@@ -200,6 +201,18 @@ void timer_init(){
 	TCCR1C = 0;
 	TIMSK1 = (1 << OCIE1A);
 
+	OCR1A = 15625; //2s 
+//	OCR1A = 65000;
+
+	TCCR1B |= (1<<CS10) | (1<<CS12); 
+}
+
+void brake_timer_init(){
+	//1024prescaler -> 128us
+	TCCR1A = 0;
+	TCCR1B = (1<<WGM12);
+	TCCR1C = 0;
+	TIMSK1 = (1 << OCIE1A);
 
 	OCR1A = 15625; //2s 
 //	OCR1A = 65000;
@@ -207,9 +220,17 @@ void timer_init(){
 	TCCR1B |= (1<<CS10) | (1<<CS12); 
 }
 
+
 ISR(TIMER1_COMPA_vect){
 	cli();
+	if(can_lost == 1){
+		printf("Game over\n\r");
+		brake = 1;
+	}
+	can_lost = 1;
 	printf("Sending package\n\r");
 	can_send();
 	sei();
 }
+
+
