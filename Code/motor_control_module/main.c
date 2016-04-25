@@ -14,13 +14,19 @@ int main(void){
 	RGB_init();
 	RGB_led_on(LED_BLUE);
 
+	int cnt = 0;
+
 	while(1){
-		esc_telemetry_recv();
+		printf("\tTarget speed: %d\n\r", tar_speed);
+		//esc_telemetry_recv();
+		
+		cnt++;
 		if(tar_speed < old_speed){
 			set_speed(tar_speed);
 			old_speed = tar_speed;
 		}else if(tar_speed > old_speed){
-			while(tar_speed > old_speed){	
+			while(tar_speed > old_speed){
+				printf("Slow speed change %d -> %d\n\r", old_speed, tar_speed);
 				old_speed = old_speed + 10;
 				set_speed(old_speed);	
 				_delay_ms(20);

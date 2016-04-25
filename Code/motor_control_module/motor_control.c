@@ -15,6 +15,9 @@ int reading = 0; 	// 0 -> not reading;  1-> reading (found first byte)
 unsigned char screen[34];
 esc myesc;
 
+
+uint8_t brake = 0; 	// 0 -> brake not pressed; 1-> brake pressed do not run motors
+
 /* Init of motor control module  */
 void init(void){
 	printf("Init complete\n\r");
@@ -135,7 +138,11 @@ void decode_screen(){
 
 
 /* Set speed (pwm value) of motors  */
-void set_speed(uint16_t target){	
+void set_speed(uint16_t target){
+	if(brake == 1){
+		//Braking do no trun motrs
+		OCR3B = MINSPEED; 
+	}
 	if(((MAXPWM_CNT - target) > MAXSPEED) && ((MAXPWM_CNT - target) < MINSPEED)){
 		OCR3B = MAXPWM_CNT - target;
 	}
@@ -145,11 +152,21 @@ void set_speed(uint16_t target){
 void can_recv(CAN_packet *p, unsigned char mob){
 	//Parse data from message
 	//TODO do some checking of data so we don't get stupid stuff
+
 	uint8_t recv =  p->data[1] ;
-	if((tar_speed + 10) < (1024 + recv*4) || (tar_speed - 10) > 1024+recv*4){
-		tar_speed = 1024 + recv*4;		
+	printf("Package id: %d\n\r", p->id);
+	if(p->id == ID_brakes){
+		//TODO set brake variable
+		/
+	}else if(p->id == ID_steeringWheel){
+		if((tar_speed + 10) < (1024 + recv*4) || (tar_speed - 10) > 1024+recv*4){
+			tar_speed = 1024 + recv*4;		
+		}
+		printf("Package received: %d\n\r", tar_speed);
 	}
-	printf("Package received: %d\n\r", tar_speed);
+
+	
+
 }
 
 /* Send telemetry data from esc to can */
@@ -175,7 +192,8 @@ void timer_init(){
 	TIMSK1 = (1 << OCIE1A);
 
 
-	OCR1A = 15625; //2s 	
+	OCR1A = 15625; //2s 
+//	OCR1A = 65000;
 
 	TCCR1B |= (1<<CS10) | (1<<CS12); 
 }
