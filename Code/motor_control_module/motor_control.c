@@ -139,7 +139,7 @@ void decode_screen(){
 
 /* Set speed (pwm value) of motors  */
 void set_speed(uint16_t target){
-	if(brake == 2){ //should be 1 
+	if(brake == 1){ //should be 1 
 		//Braking do no trun motrs
 		OCR3B = MINSPEED; 
 	}else{
@@ -225,7 +225,8 @@ ISR(TIMER1_COMPA_vect){
 	cli();
 	if(can_lost == 1){
 		printf("Game over\n\r");
-		brake = 1;
+		//If you want it to work remove comment
+		//brake = 1;
 	}
 	can_lost = 1;
 	printf("Sending package\n\r");
