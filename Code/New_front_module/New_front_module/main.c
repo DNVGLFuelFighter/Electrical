@@ -15,28 +15,21 @@
 #include "front_module.h"
 
 // 16 bit timers
+#include "timer0.h"
+#include "timer1.h"
 #include "timer3.h"	
 
 void inits( void);
 
 int main(void)
 {
-	/* Create two CAN packets */
-	CAN_packet msg_old;
-	CAN_packet msg_new;
-	
-	/* Initialize created CAN packets */
-	msg_old.id = ID_brakes;
-	msg_old.length = 1;
-	msg_new.id = ID_brakes;
-	msg_new.length = 1;
-	
+	/* Initialize module */
     inits();
+	
     for(;;) {
 		fm_horn_handler();
 		fm_wipers_handler();
 		fm_fans_handler();
-		fm_brake_watcher(&msg_old, &msg_new);
 		asm("sleep");
 	}
 	return 0;
@@ -47,9 +40,12 @@ void inits( void) {
 	can_init();
 	spi_init_master();
 	fm_init();
-	
+	timer0_init();
+	timer1_init();
 	//TODO: RUN timer3_init();
 	prepare_rx(1, ID_steeringWheel, MASK_FRONT_MODULE, fm_msg_handler);
-	printf("\r\nInitialization done");
+	printf("\r\nFront module initialized");
 	sei();
+	set_bit(DDRB, DDB6);
+	clear_bit(PORTB, PB6);
 }

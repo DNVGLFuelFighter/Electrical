@@ -101,9 +101,6 @@ void front_light_handler(CAN_packet *p, unsigned char mob) {
 	(void)mob;
 	
 	if (p->id == ID_dashboard) {
-		printf("\r\nReceived message from dashboard");
-		printf("\r\nData[0] - %d", p->data[0]);
-		printf("\r\nData[1] - %d", p->data[1]);
 		/* Headlights near and far */
 		if (p->data[0] & HEADLIGHTS_NEAR)
 			front_lights_headlights(30);
@@ -117,9 +114,6 @@ void front_light_handler(CAN_packet *p, unsigned char mob) {
 		/* Emergency lights */
 		front_emergency(p->data[0] & EMERGENCY);
 	} else if (p->id == ID_steeringWheel) {
-		printf("\r\nReceived message from steering wheel");
-		printf("\r\nData[0] - %d", p->data[0]);
-		printf("\r\nData[1] - %d", p->data[1]);
 		/* Right turn signal */
 		front_ind_right(p->data[0] & INDICATOR_RIGHT);
 	
@@ -144,16 +138,24 @@ void front_toggle_ind_right( void) {
 
 void front_emergency( BOOL on) {
 	EMERG = on;
-	IND_LEFT = on;
-	IND_RIGHT = on;
 }
 
 void front_ind_left( BOOL on) {
-	IND_LEFT = on;
+	if(on)
+		if(!IND_LEFT)
+			IND_LEFT = TRUE;
+	else
+		if(IND_LEFT)
+			IND_LEFT = FALSE;
 }
 
 void front_ind_right( BOOL on) {
-	IND_RIGHT = on;
+	if(on)
+		if(!IND_RIGHT)
+			IND_RIGHT = TRUE;
+	else
+		if(IND_RIGHT)
+			IND_RIGHT = FALSE;
 }
 
 BOOL get_ind_left( void) {

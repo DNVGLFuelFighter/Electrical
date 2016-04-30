@@ -6,17 +6,14 @@
  */ 
 /* 8-bit timer */
 
+#include "definitions.h"
+#include "can.h"
 
 #ifndef TIMER0_H_
 #define TIMER0_H_
 
-#include "front_module.h"
 #include <avr/interrupt.h>
-#include <util/delay.h>
-
 
 void timer0_init( void);
-
-
 
 #endif /* TIMER0_H_ */

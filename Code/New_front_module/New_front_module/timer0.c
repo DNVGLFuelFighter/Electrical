@@ -7,34 +7,52 @@
 
 #include "timer0.h"
 
-unsigned char OVF_CNT = 0;
-int PERIOD_CNT = 0;
-BOOL DIR_CHANGE = FALSE;
+/* Init variables */
+int different;
+BOOL ret;
+/* Make two CAN packets */
+CAN_packet current_msg;
+CAN_packet updated_msg;
+
 
 void timer0_init( void) {
-	/* clk/1 */
+	/* clk/1024 */
+	set_bit(TCCR0A, CS02);
 	set_bit(TCCR0A, CS00);
 	/* Enable timer overflow */
 	set_bit(TIMSK0, TOIE0);
-	sei();	
+	
+	/* Initialize created CAN packets */
+	current_msg.id = ID_brakes;
+	current_msg.length = 1;
+	current_msg.data[0] = 0;
+	updated_msg.id = ID_brakes;
+	updated_msg.length = 1;
+	updated_msg.data[0] = 0;
+	ret = FALSE;
 }
 
 ISR(TIMER0_OVF_vect) {
+	/* Update one CAN_packet */
 	cli();
-	if(OVF_CNT < 100){
-		OVF_CNT++;
-	} else {
-		//printf("\r\nOVF_CNT = %d", OVF_CNT);
-		OVF_CNT = 0;
-		/* Wiper signal */
-		set_bit(PORTB, PB4);
+	if(test_bit(PINE, PE5)) {
+		updated_msg.data[0] = 1;
 	}
-	if(PERIOD_CNT >= 3124*10) {
-		//printf("\r\nPERIOD_CNT value = %d", PERIOD_CNT);
-		PERIOD_CNT = 0;
-		DIR_CHANGE = TRUE;
+	sei();
+	/* Compare the two packets */
+	different = memcmp(&current_msg.data[0], &updated_msg.data[0], 1);
+	if (different) {
+// 		printf("\r\nCurrent ID %d, d[0] %d, d[1] %d", current_msg.id, current_msg.data[0], current_msg.data[1]);
+// 		printf("\r\nUpdated ID %d, d[0] %d, d[1] %d", updated_msg.id, updated_msg.data[0], updated_msg.data[1]);
+// 		printf("\r\ndiff_buttons - %d", diff_buttons);
+// 		printf("\r\ndiff_speed - %d\n", diff_speed);
+		/* Send a message with new data */
+		ret = can_packet_send(0, &updated_msg);
+		current_msg = updated_msg;	
 	}
-	else
-		PERIOD_CNT++;
-	sei();	
+	if (ret) {
+		set_bit(DDRB, DDB7);
+		ret = FALSE;
+	} else
+	clear_bit(DDRB, DDB7);
 }

@@ -160,6 +160,18 @@
     <Compile Include="spic.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="timer0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer1.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer1.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="timer3.c">
       <SubType>compile</SubType>
     </Compile>

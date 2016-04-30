@@ -41,6 +41,8 @@ C_SRCS +=  \
 ../front_module.c \
 ../main.c \
 ../spic.c \
+../timer0.c \
+../timer1.c \
 ../timer3.c \
 ../USART.c
 
@@ -56,6 +58,8 @@ can.o \
 front_module.o \
 main.o \
 spic.o \
+timer0.o \
+timer1.o \
 timer3.o \
 USART.o
 
@@ -64,6 +68,8 @@ can.o \
 front_module.o \
 main.o \
 spic.o \
+timer0.o \
+timer1.o \
 timer3.o \
 USART.o
 
@@ -72,6 +78,8 @@ can.d \
 front_module.d \
 main.d \
 spic.d \
+timer0.d \
+timer1.d \
 timer3.d \
 USART.d
 
@@ -80,6 +88,8 @@ can.d \
 front_module.d \
 main.d \
 spic.d \
+timer0.d \
+timer1.d \
 timer3.d \
 USART.d
 
@@ -97,6 +107,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

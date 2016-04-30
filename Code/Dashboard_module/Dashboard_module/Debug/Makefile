@@ -41,6 +41,8 @@ C_SRCS +=  \
 ../can.c \
 ../dashboard_module.c \
 ../main.c \
+../timer0.c \
+../timer1.c \
 ../USART.c
 
 
@@ -55,6 +57,8 @@ adc.o \
 can.o \
 dashboard_module.o \
 main.o \
+timer0.o \
+timer1.o \
 USART.o
 
 OBJS_AS_ARGS +=  \
@@ -62,6 +66,8 @@ adc.o \
 can.o \
 dashboard_module.o \
 main.o \
+timer0.o \
+timer1.o \
 USART.o
 
 C_DEPS +=  \
@@ -69,6 +75,8 @@ adc.d \
 can.d \
 dashboard_module.d \
 main.d \
+timer0.d \
+timer1.d \
 USART.d
 
 C_DEPS_AS_ARGS +=  \
@@ -76,6 +84,8 @@ adc.d \
 can.d \
 dashboard_module.d \
 main.d \
+timer0.d \
+timer1.d \
 USART.d
 
 OUTPUT_FILE_PATH +=Dashboard_module.elf
@@ -92,6 +102,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

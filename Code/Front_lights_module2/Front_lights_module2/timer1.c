@@ -66,23 +66,16 @@ ISR(TIMER1_OVF_vect) {
 	if ((!EMERG) && IND_LEFT) {
 		// toggle the left indicator
 		front_toggle_ind_left();
-	} else
+	} else 
 		front_lights_turn_left(FALSE);
 	if ((!EMERG) && IND_RIGHT) {
 		// toggle the right indicator
 		front_toggle_ind_right();
 	} else
 		front_lights_turn_right(FALSE);
+	
 	if (EMERG) {
-		if(IND_LEFT) {
-			front_toggle_ind_left();
-		}
-		else
-			front_lights_turn_left(FALSE);
-		if(IND_RIGHT) {
-			front_toggle_ind_right();
-		}
-		else
-			front_lights_turn_right(FALSE);
+		front_ind_left(EMERG);
+		front_ind_right(EMERG);	
 	}
 }
