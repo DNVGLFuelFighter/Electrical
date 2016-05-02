@@ -39,12 +39,14 @@ void sw_init( void) {
 
 void sw_input( CAN_packet* p) {	
 	/* Initialize data */
-	p->data[0] = 0x00;
+	p->data[0] = 0;
+	p->data[1] = 0;
+	p->data[2] = 0;
 	/* Read right/left indicator */
 	if(!test_bit(PIND, PD0))
 		p->data[0] |= (1<<0);
 	else if (!test_bit(PINE, PE4))
-		p->data[0] |= (1<<1);	
+		p->data[0] |= (1<<1);
 	/* Read cruise control */
 	if(!test_bit(PINB, PB2)) // CC plus
 		p->data[0] |= (1<<2);

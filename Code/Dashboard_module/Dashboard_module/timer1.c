@@ -64,11 +64,16 @@ void TIM16_WriteTCNT1(unsigned int i) {
 ISR(TIMER1_OVF_vect) {
 	/* Send a "I'm alive" message with the data */
 	CAN_packet msg;
+	BOOL ret = FALSE;
+	
 	msg.id = ID_dashboard;
 	msg.length = 1;
 	cli();
 	db_input(&msg);
 	//msg.data[0] = msg.data[0] & (1<<4); //check for emerg button
-	can_packet_send(1, &msg);
+	ret = can_packet_send(1, &msg);
 	sei();
+	if(ret)
+		toggle_bit(DDRB, PB5);
+	ret = FALSE;
 }

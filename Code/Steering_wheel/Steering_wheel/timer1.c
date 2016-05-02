@@ -65,13 +65,22 @@ void TIM16_WriteTCNT1(unsigned int i) {
 ISR(TIMER1_OVF_vect) {
 	/* Send a "I'm alive" message with the data */
 	CAN_packet msg;
+	BOOL ret = FALSE;
 	msg.id = ID_steeringWheel;
-	msg.length = 2;
+	msg.length = 3;
+	/* Initialize data */
+	msg.data[0] = 0;
+	msg.data[1] = 0;
+	msg.data[2] = 0;
 	cli();
 	sw_input(&msg);
 	adc_init();
-	adc_input(&msg);
+	adc_input(1, &msg);
+	adc_input(2, &msg);
 	adc_sleep();
-	can_packet_send(0, &msg);
+	ret = can_packet_send(0, &msg);
 	sei();
+	if(ret)
+		toggle_bit(DDRB, PB5);
+	ret = FALSE;
 }

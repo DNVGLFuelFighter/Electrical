@@ -65,11 +65,16 @@ void TIM16_WriteTCNT1(unsigned int i) {
 ISR(TIMER1_OVF_vect) {
 	/* Send a "I'm alive" message with the data */
 	CAN_packet msg;
+	BOOL ret = FALSE;
 	msg.id = ID_brakes;
 	msg.length = 1;
+	msg.data[0] = 0;
 	cli();
 	if(test_bit(PINE, PE5))
 		msg.data[0] = 1;
-	can_packet_send(0, &msg);
+	ret = can_packet_send(0, &msg);
 	sei();
+	if(ret)
+		toggle_bit(DDRB, PB5);
+	ret = FALSE;
 }

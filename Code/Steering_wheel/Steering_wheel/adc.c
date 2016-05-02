@@ -26,9 +26,12 @@ void adc_sleep( void) {
 	clear_bit(ADCSRA, ADEN);
 }
 
-void adc_input( CAN_packet* p) {
-	/*Select the reference channel */
-	ADMUX |= 0x00	;
+void adc_input( int chan, CAN_packet* p) {
+	/*Select the reference channel. 1 = speed, 2 = acc */
+	if(chan == 1)
+		ADMUX |= 0x00;
+	else if (chan == 2)
+		ADMUX |= 0x01;
 	/* Start the conversion */
 	set_bit(ADCSRA, ADSC);
 	/* Wait for the conversion to complete */
@@ -41,14 +44,6 @@ void adc_input( CAN_packet* p) {
 		full_value = 0;
 	else
 		full_value = ADC;
-// 	 (ADC_CALIB - ADC)/3;
-// 	if(full_value > 255)
-// 		full_value = 255;
-// 	else if (full_value < 0)
-// 		full_value = 0;
-
-
-
 // 	double temp_val = 0.0;
 // 	BOOL value_over_half = FALSE;
 // 	temp_val = full_value/4.0;
@@ -61,7 +56,7 @@ void adc_input( CAN_packet* p) {
 // 	p->data[5] = (int)floor(temp_val);
 // 	if(value_over_half)
 // 		p->data[3] = (int)ceil(temp_val);
-	p->data[1] = (full_value);
+	p->data[chan] = (full_value);
 }
 
 /*! ADC conversion complete interrupt 

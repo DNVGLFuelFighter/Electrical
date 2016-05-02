@@ -11,6 +11,8 @@ BOOL EMERG = FALSE;
 BOOL IND_LEFT = FALSE;
 BOOL IND_RIGHT = FALSE;
 BOOL EYEBROWS_ON = FALSE;
+BOOL SHORT_LIGHT = FALSE;
+BOOL FAR_LIGHT = FALSE;
 
 void front_lights_init( void) {
 	// Set PE4 and PE5 as outputs
@@ -54,7 +56,6 @@ void front_lights_headlights( int power) {
 
 void front_lights_eyebrows( BOOL on) {
 	if (on && !IND_LEFT && !IND_RIGHT) {
-		printf("\r\nEyebrows on");
 		set_bit(PORTF, PF1);
 		set_bit(PORTE, PE5);
 		EYEBROWS_ON = TRUE;
@@ -102,11 +103,19 @@ void front_light_handler(CAN_packet *p, unsigned char mob) {
 	
 	if (p->id == ID_dashboard) {
 		/* Headlights near and far */
-		if (p->data[0] & HEADLIGHTS_NEAR)
+		if (p->data[0] & HEADLIGHTS_NEAR) {
 			front_lights_headlights(30);
-		else if (p->data[0] & HEADLIGHTS_FAR)
+			SHORT_LIGHT = TRUE;
+			FAR_LIGHT = FALSE;
+		} else if (p->data[0] & HEADLIGHTS_FAR) {
 			front_lights_headlights(150);
-		else front_lights_headlights(0);
+			SHORT_LIGHT = FALSE;
+			FAR_LIGHT = TRUE;
+		} else {
+			front_lights_headlights(0);
+			SHORT_LIGHT = FALSE;
+			FAR_LIGHT = FALSE;
+		}
 		/* Eyebrows */
 		front_lights_eyebrows(p->data[0] & EYEBROWS);
 		/* Angel eyes */
@@ -164,6 +173,32 @@ BOOL get_ind_left( void) {
 
 BOOL get_ind_right( void) {
 	return test_bit(PORTF, PF0);
+}
+
+BOOL get_eyebrows( void) {
+	return test_bit(PORTE, PE5);
+}
+
+BOOL get_angel( void) {
+	return test_bit(PORTE, PE4);
+}
+
+void get_light_status(CAN_packet* p) {
+	p->data[0] = 0;
+	if(SHORT_LIGHT)
+		p->data[0] |= (1<<0);
+	if(FAR_LIGHT)
+		p->data[0] |= (1<<1);
+	if(get_ind_left)
+		p->data[0] |= (1<<2);
+	if(get_ind_right())
+		p->data[0] |= (1<<3);
+	if(get_eyebrows())
+		p->data[0] |= (1<<4);
+	if(get_angel())
+		p->data[0] |= (1<<5);
+	if(EMERG)
+		p->data[0] |= (1<<6);
 }
 
 void light_show() {

@@ -13,6 +13,7 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include "timer1.h"
+#include "timer0.h"
 
 void inits( void) {
 	can_init();

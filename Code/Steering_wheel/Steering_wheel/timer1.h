@@ -13,6 +13,8 @@
 
 #include <avr/interrupt.h>
 #include "can.h"
+#include "adc.h"
+#include "steering_wheel.h"
 
 #define BOTTOM	0x0000
 #define MAX		0xFFFF

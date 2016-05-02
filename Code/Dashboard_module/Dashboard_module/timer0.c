@@ -48,5 +48,5 @@ ISR(TIMER0_OVF_vect) {
 		set_bit(DDRB, PB7);
 		ret = FALSE;
 	} else
-	clear_bit(DDRB, PB7);
+		clear_bit(DDRB, PB7);
 }

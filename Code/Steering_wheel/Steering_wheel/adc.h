@@ -33,7 +33,7 @@ void adc_init( void);
 void adc_sleep( void);
 /*! TODO: Write about the function
 */
-void adc_input( CAN_packet*);
+void adc_input( int chan, CAN_packet*);
 
 
 #endif /* ADC_H_ */
