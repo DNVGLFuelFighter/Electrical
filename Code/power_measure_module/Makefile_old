@@ -1,0 +1,25 @@
+PRG = power
+
+OBJ = can.o SPI.o USART.o Power_measure_module.o 
+
+CFLAGS = -Wall -ffreestanding -mmcu=at90can128 -g3 -O1
+
+LDFLAGS = -Wl,-Map,$(PRG).map,--cref
+
+LIBS =
+
+CC = avr-gcc
+
+OBJCOPY = avr-objcopy
+
+all: $(PRG).elf $(PRG).hex
+
+
+$(PRG).elf: $(OBJ)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+
+$(PRG).hex: $(PRG).elf
+	$(OBJCOPY) -j .text -j .data -O ihex $< $@
+
+
