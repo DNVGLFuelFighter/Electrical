@@ -174,7 +174,10 @@ void can_recv(CAN_packet *p, unsigned char mob){
 		}
 		printf("Package received: %d\n\r", tar_speed);
 	}
-
+	
+	if(tar_speed < 1100){
+		set_speed(tar_speed);
+	}
 	
 
 }
@@ -191,6 +194,7 @@ void can_send(){
 	msg.data[3] = (uint8_t) (myesc.rpm >> 8);
 	msg.data[4] = (uint8_t) (myesc.rpm);
 	can_packet_send(4, &msg);
+
 }
 
 /* Timer for sending can message every x seconds */
@@ -229,8 +233,8 @@ ISR(TIMER1_COMPA_vect){
 		//brake = 1;
 	}
 	can_lost = 1;
-	printf("Sending package\n\r");
-	can_send();
+	//printf("Sending package\n\r");
+	//can_send();
 	sei();
 }
 
