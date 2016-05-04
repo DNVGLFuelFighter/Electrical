@@ -21,19 +21,18 @@ void inits(void) {
 	USART_init(MYUBRR, true);
 	front_lights_init();
 	timer1_init();
+	timer0_init();
 	
-	printf("\r\nInitialization complete");
+	printf("\r\nFront lights initialized\n");
 	set_bit(DDRB, DDB6);
 	clear_bit(PORTB, PB6);
 }
 
 int main(void)
 {
-	BOOL ret;
-
 	inits();
 	
-	ret = prepare_rx(0, ID_steeringWheel, MASK_FRONT_LIGHTS, front_light_handler);
+	prepare_rx(0, ID_steeringWheel, MASK_FRONT_LIGHTS, front_light_handler);
 	/* Set global interrupts */
 	sei();
 	

@@ -96,6 +96,8 @@ void front_toggle_ind_right( void);
 
 void front_emergency( BOOL on);
 
+void get_light_status( CAN_packet* p);
+
 
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */

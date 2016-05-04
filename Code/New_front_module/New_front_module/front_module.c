@@ -29,7 +29,7 @@ void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 				WIPERS_ON = FALSE;
 			break;
 		case ID_dashboard:
-			if(p->data[0] & (1<<7))
+			if(p->data[0] & (1<<5))
 				FANS_ON = TRUE;
 			else
 				FANS_ON = FALSE;
@@ -85,15 +85,21 @@ void fm_fans_handler( void) {
 void fm_brake_watcher(CAN_packet* msg_old, CAN_packet* msg_new){
 	BOOL ret;
 	msg_new->data[0] = 0;
-	if(test_bit(PINE, PINE5))
+	if(test_bit(PINE, DDE5)) {
 		msg_new->data[0] = 1;
-	int different = memcmp(msg_new->data, msg_old->data, 8);
-	if(different) {
 		ret = can_packet_send(0, msg_new);
 		msg_old = msg_new;
-	} else
-		ret = FALSE;
+		printf("\r\nBrakes");
+	}
+// 	int different = memcmp(msg_new->data, msg_old->data, 2);
+// 	if(different) {
+// 		
+// 		ret = can_packet_send(0, msg_new);
+// 		msg_old = msg_new;
+// 	} else
+// 		ret = FALSE;
 	if(ret) {
+		//printf("\r\nBrakes");
 		set_bit(DDRB, PB7);
 	}
 	else
@@ -104,9 +110,7 @@ void fm_horn_init( void) {
 	/* PD0 - DC0_EN, PE4 -DC1_EN, PE3 - DC2_EN */
 	set_bit(DDRD, DDD0);
 	set_bit(DDRE, DDE3);
-	set_bit(DDRE, DDE4);
-	/* Brake pedal with pull up*/
-	clear_bit(DDRE, DDE5);
+	set_bit(DDRE, DDE4);	
 }
 
 void fm_wiper_init( void) {
@@ -119,10 +123,16 @@ void fm_fans_init( void) {
 	//TODO: IMPLEMENT
 }
 
+void fm_brake_init( void) {
+	clear_bit(DDRE, DDE5);
+	set_bit(PORTE, PE5);
+}
+
 void fm_init( void) {
 	fm_horn_init();
 	fm_wiper_init();
 	fm_fans_init();
+	fm_brake_init();
 }
 
 void fm_horn(float voltage) {
@@ -143,21 +153,11 @@ void fm_horn(float voltage) {
 }
 
 void fm_fans(float voltage) {
-// 	if(voltage < 5) {
-// 		clear_bit(PORTE, PE3);
-// 		return;
-// 	}
-// 	float val = voltage;
-// 	// low - 215, high - 141
-// 	if(val < 80)
-// 		val = 80;
-// 	val = 210-0.39*(val-80);
-// 	
 	if (!voltage) {
 		/* Turn off the fans */
 		clear_bit(PORTE, PE3);
 	} else {
-		voltage = 141; // 0=24 VDC, 255=0VDC, 141=12VDC
+		voltage = 0; // 0=24 VDC, 255=0VDC, 141=12VDC
 		DAC_SELECT;
 		spi_master_tx(OUT_G);
 		spi_master_tx(voltage);

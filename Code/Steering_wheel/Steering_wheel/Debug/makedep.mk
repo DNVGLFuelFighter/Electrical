@@ -10,5 +10,9 @@ main.c
 
 steering_wheel.c
 
+timer0.c
+
+timer1.c
+
 USART.c
 

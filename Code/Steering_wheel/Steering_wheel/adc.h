@@ -18,18 +18,22 @@
 
 #include "definitions.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "can.h"
 
-#define SPEED	0
-#define FANS	1
+#define SPEED		0
+#define FANS		1
+#define ADC_CALIB	735
 
-/*! Initialize 10-bit adc */
+/*! Initialize 10-bit adc
+	\param ADC_CALIB is a constant used to calibrate the ADC
+*/
 void adc_init( void);
 /*! Put the adc to sleep when not needed to save power */
 void adc_sleep( void);
 /*! TODO: Write about the function
 */
-void adc_input( CAN_packet*);
+void adc_input( int chan, CAN_packet*);
 
 
 #endif /* ADC_H_ */

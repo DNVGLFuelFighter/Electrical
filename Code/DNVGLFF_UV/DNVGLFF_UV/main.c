@@ -21,20 +21,17 @@ void CAN_messageRX(CAN_packet *p, unsigned char mob) {
 	int id = p->id;	
 	printf("\r\nMessage ID - %d", p->id);
 	printf("\r\nMessage length - %d", p->length);
-	printf("\r\nData[0] received - %u", p->data[0]);
-	printf("\r\nData[1] received - %u", p->data[1]);
-	printf("\r\nData[2] received - %u", p->data[2]);
-	printf("\r\nData[3] received - %u", p->data[3]);
-	printf("\r\nData[4] received - %u", p->data[4]);
-	printf("\r\nData[5] received - %u", p->data[5]);
-	printf("\r\nData[6] received - %u", p->data[6]);
-	printf("\r\nData[7] received - %u", p->data[7]);
+	for(int i = 0; i < p->length; i++)
+		printf("\r\nData[%d] received - %u", i, p->data[i]);
+	printf("\n");
 }
 
 void inits(void) {
 	can_init();
 	USART_init(MYUBRR, true);
-	printf("\r\nInitialization complete");
+	printf("\r\nReceiver initialized");
+	set_bit(DDRB, PB6);
+	clear_bit(PORTB, PB6);
 }
 
 int main(void)
@@ -45,11 +42,9 @@ int main(void)
 	PORTB |= (1<<PB5);
 	
 	BOOL ret;	
-	ret = prepare_rx(1, 20, 0xff, CAN_messageRX);
+	ret = prepare_rx(1, 20, 0, CAN_messageRX);
 
 	sei();
-	
-	
 	
 	CAN_packet message;
 	char MOb = 14;
@@ -59,8 +54,9 @@ int main(void)
 	
 	while (true) {
 		
-		_delay_ms(100);
-// 		
+		if(ret) {
+			toggle_bit(DDRB, PB6);
+		}	
 // 		if (can_packet_send(MOb, &message)){
 // 			USART_tx_string("\n\rThe message was put on the can bus");
 // 			toggle_bit(DDRB, PB6);

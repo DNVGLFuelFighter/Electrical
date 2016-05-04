@@ -10,6 +10,10 @@ main.c
 
 spic.c
 
+timer0.c
+
+timer1.c
+
 timer3.c
 
 USART.c

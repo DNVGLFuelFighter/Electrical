@@ -10,7 +10,7 @@
 #define USART_H_
 
 /*! Initialize the USART module. "ubbr" is MYUBBR in "definitions.h",
-	while the boolean value turns the initialization on and off */
+	while the boolean value enables the communication */
 void USART_init(unsigned int ubbr, _Bool);
 
 /*! Send one char over the serial port. Used in USART_tx_string.
