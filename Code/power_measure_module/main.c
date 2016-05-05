@@ -18,6 +18,8 @@
 #define LED3 PD1
 #define E_STOP PE3
 
+
+//TODO change ids
 #define E_STOP_ID	1
 #define MEASURE_ID	20
 #define MOTOR_STATUS_ID	12

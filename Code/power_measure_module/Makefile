@@ -56,7 +56,7 @@ FORMAT = ihex
 
 
 # Target file name (without extension).
-TARGET = Power_measure_module
+TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
@@ -298,7 +298,7 @@ MSG_CLEANING = Cleaning project:
 
 # Define all object files.
 OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) 
-OBJ = can.o SPI.o USART.o Power_measure_module.o
+OBJ = can.o SPI.o USART.o main.o
 
 # Define all listing files.
 LST = $(SRC:.c=.lst) $(ASRC:.S=.lst) 
