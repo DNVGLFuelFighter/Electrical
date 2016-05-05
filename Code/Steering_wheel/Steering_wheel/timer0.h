@@ -14,6 +14,7 @@
 #include "can.h"
 #include "steering_wheel.h"
 #include "adc.h"
+#include "USART.h"
 
 void timer0_init( void);
 

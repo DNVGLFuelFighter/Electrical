@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>Steering_wheel</AssemblyName>
-    <Name>Steering_wheel</Name>
-    <RootNamespace>Steering_wheel</RootNamespace>
+    <AssemblyName>GPS</AssemblyName>
+    <Name>GPS</Name>
+    <RootNamespace>GPS</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -45,7 +45,6 @@
       <ToolOptions>
         <InterfaceProperties>
           <JtagDbgClock>200000</JtagDbgClock>
-          <IspClock>125000</IspClock>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
@@ -137,10 +136,7 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="adc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="adc.h">
+    <Compile Include="assert.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="can.c">
@@ -152,25 +148,25 @@
     <Compile Include="definitions.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="main.c">
+    <Compile Include="diskio.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="steering_wheel.c">
+    <Compile Include="diskio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="steering_wheel.h">
+    <Compile Include="ff.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer0.c">
+    <Compile Include="ff.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer0.h">
+    <Compile Include="ffconf.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer1.c">
+    <Compile Include="integer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer1.h">
+    <Compile Include="SDCard.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="USART.c">

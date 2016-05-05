@@ -41,10 +41,10 @@ void timer0_init( void) {
 ISR(TIMER0_OVF_vect) {
 	/* Update one CAN_packet */
 	cli();
-	sw_input(&updated_msg);		
+	sw_input(&updated_msg);	
 	adc_init();
 	adc_input(1, &updated_msg);
-	adc_input(2, &updated_msg);
+	//adc_input(2, &updated_msg);
 	adc_sleep();
 	if(((test_bit(updated_msg.data[0], 0)) || (test_bit(updated_msg.data[0], 1))) && (updated_msg.data[2] > 30) && !turned)
 		turned = TRUE;
@@ -57,6 +57,7 @@ ISR(TIMER0_OVF_vect) {
 	/* Compare the two packets */
 	diff_buttons = memcmp(&current_msg.data[0], &updated_msg.data[0], 1);
 	diff_speed = memcmp(&updated_msg.data[1], &current_msg.data[1], 1);
+
 	if (((diff_speed < 100) &&(abs(diff_speed) > 3)) || abs(diff_buttons)) {
 // 		printf("\r\nCurrent ID %d, d[0] %d, d[1] %d", current_msg.id, current_msg.data[0], current_msg.data[1]);
 // 		printf("\r\nUpdated ID %d, d[0] %d, d[1] %d", updated_msg.id, updated_msg.data[0], updated_msg.data[1]);
@@ -66,6 +67,11 @@ ISR(TIMER0_OVF_vect) {
 		ret = can_packet_send(0, &updated_msg);
 		current_msg = updated_msg;	
 	}
+// 	printf("\r\nMessage ID - %d", updated_msg.id);
+// 	printf("\r\nMessage length - %d", updated_msg.length);
+// 	for(int i = 0; i < 3; i++)
+// 	printf("\r\nData[%d] received - %u", i, updated_msg.data[i]);
+// 	printf("\n");
 	if (ret) {
 		set_bit(DDRB, PB7);
 		ret = FALSE;

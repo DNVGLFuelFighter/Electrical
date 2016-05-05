@@ -76,11 +76,12 @@ ISR(TIMER1_OVF_vect) {
 	sw_input(&msg);
 	adc_init();
 	adc_input(1, &msg);
-	adc_input(2, &msg);
+	//adc_input(2, &msg);
 	adc_sleep();
 	ret = can_packet_send(0, &msg);
 	sei();
-	if(ret)
+	if(ret) {
 		toggle_bit(DDRB, PB5);
+	}
 	ret = FALSE;
 }
