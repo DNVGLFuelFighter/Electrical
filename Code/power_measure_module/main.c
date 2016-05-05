@@ -3,8 +3,11 @@
  *
  * Created: 09.04.2015 21:41:32
  *  Author: olestokk
+ *  
+ * Edited: 05.05.2016
+ * Editor: Mark Hocevar
  */ 
-
+//TODO check for overflows; check can sending 
 
 #include "definitions.h"
 #include "SPI.h"
@@ -19,16 +22,12 @@
 #define E_STOP PE3
 
 
-//TODO change ids
-#define E_STOP_ID	1
-#define MEASURE_ID	20
-#define MOTOR_STATUS_ID	12
 
 //this is calibrated from measuring with multimeter
 #define VOLTAGE_SCALE	513
 #define CURRENT_MOTOR_ZERO	2092
 #define CURRENT_SOLAR_ZERO	520
-#define CURRENT_MOTOR_SCALE 104
+#define CURRENT_MOTOR_SCALE 10 //original 104
 #define CURRENT_SOLAR_SCALE 73
 
 uint8_t spi_seq;
@@ -140,10 +139,10 @@ int main(void)
 	//Can init with id 20. (mark)
 	can_init();
 	CAN_packet p;
-	p.id = MEASURE_ID;
-	p.length = 6;
+	p.id = ID_power_measure;
+	p.length = 4;
 	//Estop can message recv funcion setup -> id 1
-	prepare_rx(1, E_STOP_ID, 0x7ff, receiveEStop);
+	prepare_rx(1, ID_e_stop, 0x7ff, receiveEStop);
 	//prepare_rx(2, MOTOR_STATUS_ID, 0x7ff, receiveMotorStatus);
 	
 	
@@ -201,8 +200,8 @@ int main(void)
 			sei();
 			
 			//Average and scale data (mark)
-			int voltage = temp_voltage*100/temp_counter/VOLTAGE_SCALE;
-			uint32_t currentM = ((uint32_t)(temp_current_motor/temp_counter) - CURRENT_MOTOR_ZERO + 5)/CURRENT_MOTOR_SCALE;
+			int voltage = temp_voltage*100/temp_counter/VOLTAGE_SCALE; //TODO chage to uint32_t ??
+			uint32_t currentM = ((uint32_t)(temp_current_motor/temp_counter) - CURRENT_MOTOR_ZERO + 5)/CURRENT_MOTOR_SCALE -2;
 
  		
 			//What is 455??? (mark)
@@ -220,17 +219,15 @@ int main(void)
 			p.data[1] = voltage;
 			p.data[2] = currentM>>8;
 			p.data[3] = currentM;
-			p.data[4] = 0;
-			p.data[5] = motor_on;
-			
+		
 			//For debugging
 			
 			printf("Average over %d samples:\n\r", temp_counter);
-			//printf("Voltage: %d\n\r", voltage);
-			printf("Current motor: %u\n\r", currentM);
-			printf("Current without scaling: %u\n\r", (uint32_t)(temp_current_motor/temp_counter));
+			printf("Voltage: %d\n\r", voltage);
+			printf("Current motor: %lu\n\r", currentM);
+			//printf("Current without scaling: %lu\n\r", (uint32_t)(temp_current_motor/temp_counter));
 			//printf("calc: (%u/%d - %d + 5)/%d*100)\n\r", temp_current_motor, temp_counter, CURRENT_MOTOR_ZERO, CURRENT_MOTOR_SCALE);
-			printf("Current one: %d\n\r", current_motor_one_value);
+			//printf("Current one: %lu\n\r", current_motor_one_value);
 			
 			//printf("CAn packet: %s\n", str);
 			can_tx(14, &p);

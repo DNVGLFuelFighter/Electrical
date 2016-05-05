@@ -22,6 +22,6 @@ unsigned char USART1_Receive (void);
 unsigned char uart_receive0(char *str, unsigned char size, unsigned char endChar);
 unsigned char uart_receive1(char *str, unsigned char size, unsigned char endChar);
 
-void USART1_flush();
+void USART1_flush(void);
 
 #endif /* USART_H_ */

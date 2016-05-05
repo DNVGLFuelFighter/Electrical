@@ -20,9 +20,9 @@
 #define SPI_fastClock() SPCR = 0x50;
 #define SPI_slowClock() SPCR = 0x52;
 
-void SPI_MasterInit();
+void SPI_MasterInit(void);
 uint8_t SPI_MasterTransmit(uint8_t data);
-uint8_t SPI_MasterRecieve();
+uint8_t SPI_MasterRecieve(void);
 
 
 

@@ -18,8 +18,8 @@
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 
-#define BAUD1 38400
-#define BAUD2 38400
+#define BAUD1 9600
+#define BAUD2 9600
 #define MYUBRR0 F_CPU/16/BAUD1-1
 #define MYUBRR1 F_CPU/16/BAUD2-1
 
