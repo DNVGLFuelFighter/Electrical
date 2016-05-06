@@ -44,6 +44,7 @@ void adc_input( int chan, CAN_packet* p) {
 		full_value = 0;
 	else
 		full_value = ADC;
+	printf("\r\nADC %d", ADC);
 // 	double temp_val = 0.0;
 // 	BOOL value_over_half = FALSE;
 // 	temp_val = full_value/4.0;
