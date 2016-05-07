@@ -155,7 +155,7 @@ void can_recv(CAN_packet *p, unsigned char mob){
 	//TODO do some checking of data so we don't get stupid stuff
 
 
-	printf("Package id: %d\n\r", p->id);
+	//printf("Package id: %d\n\r", p->id);
 	if(p->id == ID_brakes){
 		//Set brake variable
 		can_lost = 0; //saftey if can is lost we kill the motors
@@ -166,18 +166,18 @@ void can_recv(CAN_packet *p, unsigned char mob){
 		}else{
 			brake = 1;
 		}
-		printf("got brake data %d\n\r", brake);
+		//printf("got brake data %d\n\r", brake);
 	}else if(p->id == ID_steeringWheel){
 		uint8_t recv =  p->data[1] ;
 		if((tar_speed + 10) < (1024 + recv*4) || (tar_speed - 10) > 1024+recv*4){
 			tar_speed = 1024 + recv*4;		
 		}
-		printf("Package received: %d\n\r", tar_speed);
+		//printf("Package received: %d\n\r", tar_speed);
 	}
-	
-	if(tar_speed < 1100){
+	set_speed(tar_speed);
+/*	if(tar_speed < 1100){
 		set_speed(tar_speed);
-	}
+	}*/
 	
 
 }
@@ -228,13 +228,13 @@ void brake_timer_init(){
 ISR(TIMER1_COMPA_vect){
 	cli();
 	if(can_lost == 1){
-		printf("Game over\n\r");
+		//printf("Game over\n\r");
 		//If you want it to work remove comment
 		//brake = 1;
 	}
 	can_lost = 1;
 	//printf("Sending package\n\r");
-	//can_send();
+	can_send();
 	sei();
 }
 
