@@ -21,10 +21,11 @@
 #define ID_INIT				404
 #define ID_e_stop 			1
 #define ID_brakes			3
-#define ID_steeringWheel	5
+#define ID_steeringWheel	13
 #define ID_dashboard		6
-#define ID_esc_telemetry    11
-#define ID_power_measure	12
+#define ID_esc_telemetry    14
+#define ID_power_measure 	12
+
 
 #define ID_lightsFront		81
 #define ID_lightsBack		91

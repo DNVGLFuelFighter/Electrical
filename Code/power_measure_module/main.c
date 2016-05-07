@@ -201,7 +201,7 @@ int main(void)
 			
 			//Average and scale data (mark)
 			int voltage = temp_voltage*100/temp_counter/VOLTAGE_SCALE; //TODO chage to uint32_t ??
-			uint32_t currentM = ((uint32_t)(temp_current_motor/temp_counter) - CURRENT_MOTOR_ZERO + 5)/CURRENT_MOTOR_SCALE -2;
+			uint32_t currentM = ((uint32_t)(temp_current_motor/temp_counter) - CURRENT_MOTOR_ZERO + 5)/CURRENT_MOTOR_SCALE ;
 
  		
 			//What is 455??? (mark)
