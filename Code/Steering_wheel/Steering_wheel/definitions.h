@@ -23,7 +23,6 @@ typedef char BOOL;
 #define FALSE 0
 #define false 0
 
-#define ID_TEST 16
 // Used in front_light_handler()
 #define HEADLIGHTS_NEAR			0b1
 #define HEADLIGHTS_FAR			0b10

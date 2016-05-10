@@ -19,9 +19,10 @@
  *	other than -O1. This would be found in the Makefile.
  *  
  *  This code has been successfully tested with a 1GB SD card and a 32GB SDHC card.
+ *	Edited on: 5/7/2016
+ *	Edited by: Vilius Ciuzelis
+ *	Company: DNV GL Fuel Fighter @ Norwegian University of Science and Technology (NTNU)
  */ 
-
-/*#define F_CPU 2000000UL*/
 
 #include <avr/io.h>
 
@@ -31,7 +32,7 @@
 #include "definitions.h"
 #include <util/delay.h>
 #include "USART.h"
-
+#include "can.h"
 
 #define BLUELEDOFF PORTB |= (1<<7)
 #define BLUELEDON PORTB &= ~(1<<7)
@@ -51,15 +52,207 @@
 #define CPU_125kHz      0x07
 #define CPU_62kHz       0x08
 
-/**********
-** This function initializes the Port Pin Directions of the
-** used pins. This function also sets up the SPI in master mode.
-** The ADC is also set up. It's using ADC0, in Free Running mode,
-** and the clock rate has been divided so it's in the more acceptable
-** frequency range (50kHz - 200kHz) for the ADC.
-**********/
+void Initialize();
+uint8_t initializeFAT(FATFS* fs);
+void GPS_callback(CAN_packet *p, unsigned char mob);
+void errorLED( void);
+void finishedLED( void);
+
+FIL file_sw;
+FIL file_power;
+FIL file_esc;
+BOOL FINISHED_LISTENING = FALSE;
+BOOL FINISHED_WRITING_SW = TRUE;
+BOOL FINISHED_WRITING_POWER = TRUE;
+BOOL FINISHED_WRITING_ESC = TRUE;
+char buf_sw[5];
+char buf_power[18]; // why not 17? --> Can't close with 17
+char buf_esc[21];
+UINT bytesWritten_sw;
+UINT bytesWritten_power;
+UINT bytesWritten_esc;
+
+int main(void){
+	FATFS fs;
+	
+	uint8_t result;
+	BOOL ret = FALSE;
+	BOOL SDCard_closed = FALSE;
+	
+	//CPU_PRESCALE(CPU_8MHz);
+	Initialize();
+	
+	result = initializeFAT(&fs);
+	
+	if (result != 0)
+		while(1)
+			errorLED();
+	GREENLEDON;
+	printf("\r\nGPS initialized");
+	//Open a text file on the SD Card
+	if(f_open(&file_sw, "/SW.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
+		while (1)
+			errorLED();
+	}
+	if(f_open(&file_power, "/POWER.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
+		while (1)
+			errorLED();
+	}
+	if(f_open(&file_esc, "/ESC.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
+		while (1)
+			errorLED();
+	}
+	//Delay to ensure things are all set up and SD card is ready to receive more commands
+	_delay_ms(500);
+	GREENLEDON;
+	
+	ret = prepare_rx(0, ID_steeringWheel, MASK_GPS, GPS_callback);
+	for(;;) {
+		if(SDCard_closed){
+				finishedLED();
+		} else if (!test_bit(PINE, PE3)) {
+			FINISHED_LISTENING = TRUE;
+			if (FINISHED_WRITING_SW && FINISHED_WRITING_POWER && FINISHED_WRITING_ESC && !SDCard_closed) {
+				printf("\r\nClosing SD Card.");
+				if (f_close(&file_sw) != FR_OK){
+					while (1) {
+						printf("\r\nCouldn't close SD Card.");
+						_delay_ms(100);
+						errorLED();
+					}
+				}
+				if (f_close(&file_power) != FR_OK){
+					while (1) {
+						printf("\r\nCouldn't close SD Card.");
+						_delay_ms(100);
+						errorLED();
+					}
+				}
+				if (f_close(&file_esc) != FR_OK){
+					while (1) {
+						printf("\r\nCouldn't close SD Card.");
+						_delay_ms(100);
+						errorLED();
+					}
+				}
+				f_mount(0,0);
+				printf("\r\nSD Card closed.");
+				SDCard_closed = TRUE;
+			}	
+		}
+		asm("sleep");
+	}
+}
+
+void SDCard_esc(CAN_packet *p) {
+	if (FINISHED_LISTENING) {
+		//do nothing
+	} else if (FINISHED_WRITING_ESC && !FINISHED_LISTENING) {
+		cli();
+		FINISHED_WRITING_ESC = FALSE;
+		// write stuff
+		BLUELEDON;
+		GREENLEDOFF;
+		int numBytes = 21;
+		
+		sprintf(buf_esc,"%d %d %d %d %d\r\n", p->data[0], p->data[1], p->data[2], p->data[3], p->data[4]);
+		
+		printf("\r\nWriting %s", buf_esc);
+		if (f_write(&file_esc, &buf_esc, numBytes, &bytesWritten_esc) != FR_OK) {
+			while(1) {
+				printf("\r\nCouldnt write");
+				_delay_ms(50);
+				errorLED();
+			}
+		}
+		BLUELEDOFF;
+		FINISHED_WRITING_ESC = TRUE;
+		sei();
+	}
+// 	for(int i=0; i<5; i++) {
+// 		if(p->data[i] < 10)
+// 			numBytes = numBytes + 1;
+// 		else if(p->data[i] < 100)
+// 			numBytes = numBytes + 2;
+// 		else
+// 			numBytes = numBytes + 3;
+// 	}
+}
+
+void SDCard_power(CAN_packet *p) {
+	if (FINISHED_LISTENING) {
+		//do nothing
+	} else if (FINISHED_WRITING_POWER && !FINISHED_LISTENING) {
+		cli();
+		FINISHED_WRITING_POWER = FALSE;
+		// write stuff
+		BLUELEDON;
+		GREENLEDOFF;
+		int numBytes = 17;
+		
+		sprintf(buf_power,"%d %d %d %d\r\n", p->data[0], p->data[1], p->data[2], p->data[3]);
+
+		printf("\r\nWriting %s", buf_power);
+		if (f_write(&file_power, &buf_power, numBytes, &bytesWritten_power) != FR_OK) {
+			while(1) {
+				printf("\r\nCouldnt write");
+				_delay_ms(50);
+				errorLED();
+			}
+		}
+		BLUELEDOFF;
+		FINISHED_WRITING_POWER = TRUE;
+		sei();
+	}
+}
+
+void SDCard_sw(CAN_packet *p) {
+	if (FINISHED_LISTENING) {
+		//do nothing
+	} else if (FINISHED_WRITING_SW && !FINISHED_LISTENING) {
+		cli();
+		FINISHED_WRITING_SW = FALSE;
+		// write stuff
+		BLUELEDON;
+		GREENLEDOFF;
+		int numBytes = 5;
+		
+		sprintf(buf_sw,"%d\r\n", p->data[1]);
+
+		printf("\r\nWriting %s", buf_sw);
+		if (f_write(&file_sw, &buf_sw, numBytes, &bytesWritten_sw) != FR_OK) {
+			while(1) {
+				printf("\r\nCouldnt write");
+				_delay_ms(50);
+				errorLED();
+			}
+		}
+		BLUELEDOFF;
+		FINISHED_WRITING_SW = TRUE;
+		sei();
+	}
+}
+
+void GPS_callback(CAN_packet *p, unsigned char mob) {
+	(void)mob;
+	switch(p->id) {
+		case ID_steeringWheel:
+			if(FINISHED_WRITING_SW)
+				SDCard_sw(p);
+			break;
+		case ID_power:
+			if(FINISHED_WRITING_POWER)
+				SDCard_power(p);
+			break;
+		case ID_esc_telemetry:
+			if(FINISHED_WRITING_ESC)
+				SDCard_esc(p);
+			break;
+	}
+}
+
 void Initialize(){
-	//0 --> Input   
+	//0 --> Input
 	//1 --> Output
 	DDRB = 0b11100111;
 	PORTB |= (1<<5)|(1<<6)|(1<<7);
@@ -71,12 +264,11 @@ void Initialize(){
 	//Set Up the SPI in Master Mode
 	DDRB |= (1<<2)|(1<<1)|(1<<0);
 	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-		
-	//Set up the ADC (Using ADC0)
-	ADMUX |= (1<<REFS0)|(1<<ADLAR);	//Sets reference to AVCC and left aligns ADC value
-	ADCSRA |= (1<<ADEN)|(1<<ADSC)|(1<<ADATE)|(1<<ADPS1);		//Enables ADC, Start ADC, Auto Trigger, and Divides F_CPU by 16
-	ADCSRB &= ~(1<<ADTS0)|~(1<<ADTS1)|~(1<<ADTS2)/*|~(1<<ADTS3)*/;		//Free running mode
-	USART_init(MYUBRR1, TRUE);
+	
+	USART0_Init(MYUBRR0);
+	USART1_Init(MYUBRR1);
+	can_init();
+	sei();
 }
 
 uint8_t initializeFAT(FATFS* fs){
@@ -110,92 +302,18 @@ uint8_t initializeFAT(FATFS* fs){
 	
 	return 0;
 }
-
-//Turns on the error signal on the Teensy
-void errorLED(void){
+	
+//Turns on the error signal
+void errorLED( void){
 	REDLEDON;
 	_delay_ms(75);
 	REDLEDOFF;
-	_delay_ms(75);	
+	_delay_ms(75);
 }
 
-int main(void){
-	FATFS fs;
-	FIL log;
-	uint8_t result;
-	UINT bytesWritten;
-	uint8_t adcValue;
-	uint16_t i;
-	char buf[5];
-		
-	//CPU_PRESCALE(CPU_8MHz);
-	Initialize();
+void finishedLED( void){
 	GREENLEDON;
-	
-
-	//Initialize the SD Card
-	result = initializeFAT(&fs);
-	if (result != 0){
-		while(1)
-			errorLED();
-	}
-	
-	//Open a text file on the SD Card
-	if(f_open(&log, "/data.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
-		while (1)
-			errorLED();
-	}
-	
-	//Delay to ensure things are all set up and SD card is ready to receive more commands
-	_delay_ms(500);
-	
-	//Loops through taking ADC measurements for a certain number of times
-	//This could easily be changed to triggering on a button press or other 
-	//		method of initiating
-	int numBytes = 3;
-	while(1) {
-		
-		BLUELEDON;
-		
-		//We only have 8 bits of precision and the values are left aligned,
-		//	so we only look at the high (ADCH) 8 bits of the ADC value (10 bits total)
-		adcValue = ADCH;
-		
-		//sprintf puts our values in decimal into a string (easier to 'print')
-		sprintf(buf,"%d\r\n",adcValue);
-		
-		//This writes our array with the ADC value to the SD card
-		if(adcValue < 10)
-			numBytes = 3;
-		else if(adcValue < 100)
-			numBytes = 4;
-		else
-			numBytes = 5;
-		if (f_write(&log, buf, numBytes, &bytesWritten) != FR_OK){
-			while(1)
-				errorLED();
-		}
-		
-		BLUELEDOFF;
-		//The ADC value updates slowly (comparatively)
-		_delay_ms(50);
-		if(!test_bit(PINE, PE3))
-			break;
-	}
-	
-	//Close the SD card
-	if (f_close(&log) != FR_OK){
-		while (1)
-			errorLED();
-	}
-	
-	f_mount(0,0);
-	printf("\r\nDone!");
-    while(1){
-		GREENLEDON;
-		_delay_ms(400);
-		GREENLEDOFF;
-		_delay_ms(400);
-		
-    }//While Loop
-}//Main*/
+	_delay_ms(400);
+	GREENLEDOFF;
+	_delay_ms(400);
+}

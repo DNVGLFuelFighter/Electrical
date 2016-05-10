@@ -5,10 +5,8 @@
  *  Author: Vilius
  */ 
 
-#include ""
+#include "gyro.h"
 
 void gyro_init( void) {
 	
 }
-
-uint8_t gyro_read( uin)

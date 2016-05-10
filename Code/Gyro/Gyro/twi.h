@@ -9,6 +9,9 @@
 #ifndef TWI_H_
 #define TWI_H_
 
+#include <stdio.h>
+#include "definitions.h"
+
 
 
 

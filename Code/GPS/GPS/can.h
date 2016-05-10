@@ -13,7 +13,28 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n
 	See http://www.gnu.org/copyleft/gpl.html for mor details.
 */
+#ifndef _CAN_H__
+#define _CAN_H__
+
 #include "definitions.h"
+
+#define ID_INIT				404
+#define ID_brakes			3
+#define ID_steeringWheel	13
+#define ID_dashboard		6
+#define ID_esc_telemetry	14
+#define ID_power			12
+// #define ID_GPS				100
+// #define ID_rPi				1001
+
+#define ID_lightsFront		81
+#define ID_lightsBack		91
+
+#define MASK_MOTOR_MODULE	1
+#define MASK_BACK_LIGHTS	2
+#define MASK_FRONT_MODULE	4
+#define MASK_FRONT_LIGHTS	4
+#define MASK_GPS			12
 
 #define NO_MOBS 15 		//!< number of message object buffers (MOBs) (AT90CAN128)
 #define NOMOB 	0xff 	//!< return value for getmob()
@@ -56,8 +77,21 @@ BOOL prepare_rx( char mob, unsigned id, unsigned idmask, CAN_cbf callback);
 */
 BOOL can_tx( char mob, 	CAN_packet *packet);
 
-/*! can interface initialisation
+/*! can interface initialization
 
 	call this function before any CAN related function is used
 */
 void can_init( void);
+
+
+/*! Displays current can channel information via printf foo
+
+*/
+void can_health(void);
+
+/*! Send a complete CAN packet over the can bus
+	For parameter description see "can.h"
+*/
+BOOL can_packet_send( char mob, CAN_packet* packet);
+
+#endif
