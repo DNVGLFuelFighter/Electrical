@@ -1,26 +1,25 @@
 /*
  * USART.h
  *
- * Created: 3/19/2016 2:58:09 PM
- *  Author: Vilius
+ * Created: 02.07.2013 17:52:37
+ *  Author: Ole
  */ 
 
 
 #ifndef USART_H_
 #define USART_H_
 
-/*! Initialize the USART module. "ubbr" is MYUBBR in "definitions.h",
-	while the boolean value enables the communication */
-void USART_init(unsigned int ubbr, _Bool);
+//USART0 is connected to the USB
 
-/*! Send one char over the serial port. Used in USART_tx_string.
-	Returns positive when the transmission is done */
-_Bool USART_tx(unsigned char data);
-
-/*! Send a string over the serial port */
-_Bool USART_tx_string(char* text);
-
-/*! Receive the data over the serial port */
-unsigned char USART_rx(void);
+void USART0_Init (unsigned int baud);
+void USART1_Init (unsigned int baud);
+void uart_putc0 (unsigned char data);
+void uart_putc1 (unsigned char data);
+void uart_puts0(const char *s );
+void uart_puts1(const char *s );
+unsigned char USART0_Receive (void);
+unsigned char USART1_Receive (void);
+unsigned char uart_receive0(char *str, unsigned char size, unsigned char endChar);
+unsigned char uart_receive1(char *str, unsigned char size, unsigned char endChar);
 
 #endif /* USART_H_ */

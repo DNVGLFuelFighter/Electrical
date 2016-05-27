@@ -38,13 +38,12 @@ void adc_input( int chan, CAN_packet* p) {
 	while(test_bit(ADCSRA, ADSC));
 	
 	unsigned int full_value = 0;
-	if(ADC > 255)
+	full_value = ADC + 30;
+	if(full_value > 255)
 		full_value = 255;
-	else if(ADC < 0)
+	else if(full_value < 0)
 		full_value = 0;
-	else
-		full_value = ADC;
-	printf("\r\nADC %d", ADC);
+		
 // 	double temp_val = 0.0;
 // 	BOOL value_over_half = FALSE;
 // 	temp_val = full_value/4.0;
