@@ -166,7 +166,7 @@ void can_recv(CAN_packet *p, unsigned char mob){
 		}else{
 			brake = 1;
 		}
-	// 	printf("got brake data %d\n\r", brake);
+		//printf("got brake data %d\n\r", brake);
 	}else if(p->id == ID_steeringWheel){
 		uint8_t recv =  p->data[1] ;
 		if((tar_speed + 10) < (1024 + recv*4) || (tar_speed - 10) > 1024+recv*4){
@@ -174,7 +174,6 @@ void can_recv(CAN_packet *p, unsigned char mob){
 		}
 		//printf("Package received: %d\n\r", tar_speed);
 	}
-	//printf("Target speed: %d\n\r", tar_speed);
 	set_speed(tar_speed);
 /*	if(tar_speed < 1100){
 		set_speed(tar_speed);
