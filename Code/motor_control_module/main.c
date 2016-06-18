@@ -17,8 +17,9 @@ int main(void){
 	int cnt = 0;
 
 	while(1){
-//		printf("\tTarget speed: %d\n\r", tar_speed);
-		esc_telemetry_recv();
+		printf("\tTarget speed: %d\n\r", tar_speed);
+		_delay_ms(100);
+		//esc_telemetry_recv();
 
 	/*	
 		cnt++;
