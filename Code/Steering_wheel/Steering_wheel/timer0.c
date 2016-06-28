@@ -25,17 +25,17 @@ void timer0_init( void) {
 	set_bit(TIMSK0, TOIE0);
 	
 	current_msg.id = ID_steeringWheel;
-	current_msg.length = 3;
+	current_msg.length = 2;
 	current_msg.data[0] = 0;
 	current_msg.data[1] = 0;
-	current_msg.data[2] = 0;
+	/*current_msg.data[2] = 0;*/
 	updated_msg.id = ID_steeringWheel;
-	updated_msg.length = 3;
+	updated_msg.length = 2;
 	updated_msg.data[0] = 0;
 	updated_msg.data[1] = 0;
-	current_msg.data[2] = 0;
+	/*current_msg.data[2] = 0;*/
 	ret = FALSE;
-	turned = TRUE;
+	/*turned = TRUE;*/
 }
 
 ISR(TIMER0_OVF_vect) {
@@ -46,13 +46,13 @@ ISR(TIMER0_OVF_vect) {
 	adc_input(1, &updated_msg);
 	//adc_input(2, &updated_msg);
 	adc_sleep();
-	if(((test_bit(updated_msg.data[0], 0)) || (test_bit(updated_msg.data[0], 1))) && (updated_msg.data[2] > 30) && !turned)
-		turned = TRUE;
-	if(turned && (updated_msg.data[2] < 10)) {
-		turned = FALSE;
-		clear_bit(updated_msg.data[0], 0);
-		clear_bit(updated_msg.data[0], 1);
-	}		
+// 	if(((test_bit(updated_msg.data[0], 0)) || (test_bit(updated_msg.data[0], 1))) && (updated_msg.data[2] > 30) && !turned)
+// 		turned = TRUE;
+// 	if(turned && (updated_msg.data[2] < 10)) {
+// 		turned = FALSE;
+// 		clear_bit(updated_msg.data[0], 0);
+// 		clear_bit(updated_msg.data[0], 1);
+// 	}		
 	sei();
 	/* Compare the two packets */
 	diff_buttons = memcmp(&current_msg.data[0], &updated_msg.data[0], 1);
@@ -76,5 +76,5 @@ ISR(TIMER0_OVF_vect) {
 		set_bit(DDRB, PB7);
 		ret = FALSE;
 	} else
-	clear_bit(DDRB, PB7);
+		clear_bit(DDRB, PB7);
 }

@@ -7,6 +7,11 @@
 
 #include "steering_wheel.h"
 
+BOOL sw_ind_right_change = FALSE;
+BOOL sw_ind_right_temp = FALSE;
+BOOL sw_ind_left_change = FALSE;
+BOOL sw_ind_left_temp = FALSE;
+
 void sw_init( void) {	
 	/* Indicators init */
 	/* Set PE4 and PD0 as inputs */
@@ -43,10 +48,20 @@ void sw_input( CAN_packet* p) {
 	p->data[1] = 0;
 	p->data[2] = 0;
 	/* Read right/left indicator */
-	if(!test_bit(PIND, PD0))
+	sw_ind_right_temp = !test_bit(PIND, PD0); 
+	if(sw_ind_right_temp == TRUE && sw_ind_right_change == FALSE && sw_ind_left_change == FALSE) {
+		sw_ind_right_change == TRUE;
 		p->data[0] |= (1<<0);
-	else if (!test_bit(PINE, PE4))
+	} else {
+		sw_ind_right_change = sw_ind_right_temp;
+	}
+	sw_ind_left_temp = !test_bit(PINE, PE4);
+	if(sw_ind_left_temp == TRUE && sw_ind_left_change == FALSE && sw_ind_right_change == FALSE) {
+		sw_ind_left_change = TRUE;
 		p->data[0] |= (1<<1);
+	} else {
+		sw_ind_left_change = sw_ind_left_temp;
+	}
 	/* Read cruise control */
 	if(!test_bit(PINB, PB2)) // CC plus
 		p->data[0] |= (1<<2);

@@ -93,11 +93,10 @@ BOOL get_ind_right( void);
 
 void front_toggle_ind_left( void);
 void front_toggle_ind_right( void);
-
+void front_ind_left( BOOL on);
+void front_ind_right( BOOL on);
 void front_emergency( BOOL on);
 
 void get_light_status( CAN_packet* p);
-
-
 
 #endif /* FRONTL_LIGHTS_MODULE_H_ */

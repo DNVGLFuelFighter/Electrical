@@ -17,13 +17,28 @@
 void CAN_messageRX(CAN_packet *p, unsigned char mob) {		
 	//USART_tx_string("\n\rMessage received!");
 	toggle_bit(DDRB, PB6);
-	
-	int id = p->id;	
-	printf("\r\nMessage ID - %d", p->id);
-	printf("\r\nMessage length - %d", p->length);
-	for(int i = 0; i < p->length; i++)
-		printf("\r\nData[%d] received - %u", i, p->data[i]);
-	printf("\n");
+
+	/***********************************************************
+	Printing fuction for the data received from the hall sensor
+	***********************************************************/
+// 	if(p->id == 10) {
+// 		uint16_t data;
+// 		data |= p->data[0] *256 + p->data[1];
+// 		data = data/100;
+// 		printf("\r\nSpeed - %u m/s", data);
+// 	}
+	/***********************************************************
+	Printing fuction for the throttle input
+	***********************************************************/
+	/*if (p->id == 13) {*/
+		printf("\r\nMessage ID - %d", p->id);
+		printf("\r\nMessage length - %d", p->length);
+		for(int i = 0; i < p->length; i++) {
+			
+			printf("\r\nData[%d] received - %u", i, p->data[i]);
+		}
+		printf("\n");
+	/*}*/
 }
 
 void inits(void) {
@@ -34,15 +49,14 @@ void inits(void) {
 	clear_bit(PORTB, PB6);
 }
 
-int main(void)
-{
+int main(void) {
 	inits();
 
 	DDRB |= (1<<DDB5);
 	PORTB |= (1<<PB5);
 	
 	BOOL ret;	
-	ret = prepare_rx(1, 20, 0, CAN_messageRX);
+	ret = prepare_rx(0, 20, 0, CAN_messageRX);
 
 	sei();
 	
@@ -53,7 +67,6 @@ int main(void)
 	message.data[0] = 0b000000;	// For message structure see front light module documentation
 	
 	while (true) {
-		
 		if(ret) {
 			toggle_bit(DDRB, PB6);
 		}	
@@ -67,6 +80,11 @@ int main(void)
 // 			clear_bit(DDRB, PB6);
 // 		}
     }
+}
+
+ISR(USART0_RX_vect) {
+	unsigned char c = USART_rx();
+	printf("\r\n%c", c);
 }
 
 

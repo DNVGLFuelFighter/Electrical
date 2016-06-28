@@ -29,7 +29,6 @@ void timer0_init( void) {
 }
 
 ISR(TIMER0_OVF_vect) {
-	
 	cli();
 	get_light_status(&updated_msg);
 	sei();

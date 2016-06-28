@@ -24,11 +24,13 @@ void timer0_init( void) {
 	set_bit(TIMSK0, TOIE0);
 	
 	current_msg.id = ID_dashboard;
-	current_msg.length = 1;
+	current_msg.length = 2;
 	current_msg.data[0] = 0;
+	current_msg.data[1] = 0;
 	updated_msg.id = ID_dashboard;
-	updated_msg.length = 1;
+	updated_msg.length = 2;
 	updated_msg.data[0] = 0;
+	current_msg.data[1] = 0;
 	ret = FALSE;
 }
 
@@ -36,7 +38,7 @@ ISR(TIMER0_OVF_vect) {
 	/* Update one CAN_packet */
 	cli();
 	db_input(&updated_msg);
-	sei();
+	
 	/* Compare the two packets */
 	different = memcmp(current_msg.data, updated_msg.data, current_msg.length);
 	if (different) {
@@ -44,7 +46,12 @@ ISR(TIMER0_OVF_vect) {
 		ret = can_packet_send(1, &updated_msg);
 		current_msg = updated_msg;
 	}
+	sei();
+	
 	if (ret) {
+		/* DEBUG */
+		printf("\r\ndata[0]-%d", updated_msg.data[0]);
+		printf("\r\ndata[1]-%d", updated_msg.data[1]);
 		set_bit(DDRB, PB7);
 		ret = FALSE;
 	} else

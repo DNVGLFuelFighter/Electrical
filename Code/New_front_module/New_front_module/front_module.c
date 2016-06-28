@@ -16,7 +16,7 @@ int duty = 1500;
 
 void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 	(void)mob;
-	printf("\r\np->data[1] %u", p->data[1]);
+	printf("\r\nMessage received");
 	switch(p->id) {
 		case ID_steeringWheel:
 			if(p->data[0] & (1<<4))
@@ -29,7 +29,7 @@ void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 				WIPERS_ON = FALSE;
 			break;
 		case ID_dashboard:
-			if(p->data[0] & (1<<5))
+			if(p->data[0] & (1<<0))
 				FANS_ON = TRUE;
 			else
 				FANS_ON = FALSE;
@@ -46,10 +46,14 @@ void fm_horn_handler( void) {
 
 void fm_wipers_handler( void) {
 	if(WIPERS_ON) {
-		fm_wipers(5); // 6 VDC
+		fm_wipers(6); // <6 VDC
 		if(CW) {
 			CCW = FALSE;
 			if(duty < 2200) {
+// 				if(cnt == 100) {
+// 					duty = duty+1;
+// 					cnt = 0;
+// 				}
 				duty = duty+10;
 			} else {
 				CW = FALSE;
@@ -59,6 +63,10 @@ void fm_wipers_handler( void) {
 		if (CCW) {
 			CW = FALSE;
 			if(duty > 1500) {
+// 				if(cnt==100) {
+// 					duty = duty-1;
+// 					cnt = 0;
+// 				}
 				duty = duty-10;
 			} else {
 				CW = TRUE;
@@ -108,9 +116,8 @@ void fm_brake_watcher(CAN_packet* msg_old, CAN_packet* msg_new){
 
 void fm_horn_init( void) {
 	/* PD0 - DC0_EN, PE4 -DC1_EN, PE3 - DC2_EN */
-	set_bit(DDRD, DDD0);
-	set_bit(DDRE, DDE3);
-	set_bit(DDRE, DDE4);	
+	set_bit(DDRD, DDD0);	
+ 	clear_bit(PORTD, PD0);
 }
 
 void fm_wiper_init( void) {
@@ -121,6 +128,7 @@ void fm_wiper_init( void) {
 
 void fm_fans_init( void) {
 	//TODO: IMPLEMENT
+	set_bit(DDRE, DDE3);
 }
 
 void fm_brake_init( void) {
@@ -147,8 +155,7 @@ void fm_horn(float voltage) {
 		spi_master_tx(OUT_E);
 		spi_master_tx(fm_voltage_to_DAC(voltage));
 		DAC_DESELECT;
-		
-		set_bit(PORTD, PD0);
+		set_bit(PORTD, PD0);	
 	}
 }
 
@@ -173,14 +180,14 @@ void fm_wipers(float voltage) {
 	}
 	if (voltage < 2) {
 		/* Turn off the wipers */
-		clear_bit(PORTE, PE4);
+		clear_bit(PORTB, PB4);
 	} else {
 		DAC_SELECT;
 		spi_master_tx(OUT_F);
 		spi_master_tx(fm_voltage_to_DAC(voltage));
 		DAC_DESELECT;
 		
-		set_bit(PORTE, PE4);
+		set_bit(PORTB, PB4);
 	}
 }
 

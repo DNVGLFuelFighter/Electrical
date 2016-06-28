@@ -24,123 +24,30 @@
  *	Company: DNV GL Fuel Fighter @ Norwegian University of Science and Technology (NTNU)
  */ 
 
-#include <avr/io.h>
+#include "SDCard.h"
 
-#include <stdio.h>
-#include "ff.h"
-#include "diskio.h"
-#include "definitions.h"
-#include <util/delay.h>
-#include "USART.h"
-#include "can.h"
-
-#define BLUELEDOFF PORTB |= (1<<7)
-#define BLUELEDON PORTB &= ~(1<<7)
-#define GREENLEDOFF PORTB |= (1<<6)
-#define GREENLEDON PORTB &= ~(1<<6)
-#define REDLEDON PORTB &= ~(1<<5)
-#define REDLEDOFF PORTB |= (1<<5)
-
-#define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
-#define CPU_16MHz       0x00
-#define CPU_8MHz        0x01
-#define CPU_4MHz        0x02 
-#define CPU_2MHz        0x03
-#define CPU_1MHz        0x04
-#define CPU_500kHz      0x05
-#define CPU_250kHz      0x06
-#define CPU_125kHz      0x07
-#define CPU_62kHz       0x08
-
-void Initialize();
-uint8_t initializeFAT(FATFS* fs);
-void GPS_callback(CAN_packet *p, unsigned char mob);
-void errorLED( void);
-void finishedLED( void);
-
-FIL file_sw;
-FIL file_power;
-FIL file_esc;
-BOOL FINISHED_LISTENING = FALSE;
-BOOL FINISHED_WRITING_SW = TRUE;
-BOOL FINISHED_WRITING_POWER = TRUE;
-BOOL FINISHED_WRITING_ESC = TRUE;
 char buf_sw[5];
-char buf_power[18]; // why not 17? --> Can't close with 17
-char buf_esc[21];
+char buf_power[13]; // why not 17? --> Can't close with 17
+char buf_esc[19];
 UINT bytesWritten_sw;
 UINT bytesWritten_power;
 UINT bytesWritten_esc;
 
-int main(void){
-	FATFS fs;
-	
-	uint8_t result;
-	BOOL ret = FALSE;
-	BOOL SDCard_closed = FALSE;
-	
-	//CPU_PRESCALE(CPU_8MHz);
-	Initialize();
-	
-	result = initializeFAT(&fs);
-	
-	if (result != 0)
-		while(1)
-			errorLED();
-	GREENLEDON;
-	printf("\r\nGPS initialized");
-	//Open a text file on the SD Card
-	if(f_open(&file_sw, "/SW.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
-		while (1)
-			errorLED();
-	}
-	if(f_open(&file_power, "/POWER.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
-		while (1)
-			errorLED();
-	}
-	if(f_open(&file_esc, "/ESC.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
-		while (1)
-			errorLED();
-	}
-	//Delay to ensure things are all set up and SD card is ready to receive more commands
-	_delay_ms(500);
-	GREENLEDON;
-	
-	ret = prepare_rx(0, ID_steeringWheel, MASK_GPS, GPS_callback);
-	for(;;) {
-		if(SDCard_closed){
-				finishedLED();
-		} else if (!test_bit(PINE, PE3)) {
-			FINISHED_LISTENING = TRUE;
-			if (FINISHED_WRITING_SW && FINISHED_WRITING_POWER && FINISHED_WRITING_ESC && !SDCard_closed) {
-				printf("\r\nClosing SD Card.");
-				if (f_close(&file_sw) != FR_OK){
-					while (1) {
-						printf("\r\nCouldn't close SD Card.");
-						_delay_ms(100);
-						errorLED();
-					}
-				}
-				if (f_close(&file_power) != FR_OK){
-					while (1) {
-						printf("\r\nCouldn't close SD Card.");
-						_delay_ms(100);
-						errorLED();
-					}
-				}
-				if (f_close(&file_esc) != FR_OK){
-					while (1) {
-						printf("\r\nCouldn't close SD Card.");
-						_delay_ms(100);
-						errorLED();
-					}
-				}
-				f_mount(0,0);
-				printf("\r\nSD Card closed.");
-				SDCard_closed = TRUE;
-			}	
-		}
-		asm("sleep");
+void SDCard_callback(CAN_packet *p, unsigned char mob) {
+	(void)mob;
+	switch(p->id) {
+		case ID_steeringWheel:
+			if(FINISHED_WRITING_SW && TIMER0_SW_OVF)
+				SDCard_sw(p);
+			break;
+		case ID_power:
+			if(FINISHED_WRITING_POWER && TIMER0_POWER_OVF)
+				SDCard_power(p);
+			break;
+		case ID_esc_telemetry:
+			if(FINISHED_WRITING_ESC && TIMER0_ESC_OVF)
+				SDCard_esc(p);
+			break;
 	}
 }
 
@@ -153,14 +60,16 @@ void SDCard_esc(CAN_packet *p) {
 		// write stuff
 		BLUELEDON;
 		GREENLEDOFF;
-		int numBytes = 21;
-		
-		sprintf(buf_esc,"%d %d %d %d %d\r\n", p->data[0], p->data[1], p->data[2], p->data[3], p->data[4]);
+		int numBytes = 20;
+		uint16_t rpm;
+		rpm = ((p->data[3])<<8);
+		rpm |= (p->data[4]);
+		sprintf(buf_esc,"%d %d %d %d\r\n", p->data[0], p->data[1], p->data[2], rpm);
 		
 		printf("\r\nWriting %s", buf_esc);
 		if (f_write(&file_esc, &buf_esc, numBytes, &bytesWritten_esc) != FR_OK) {
 			while(1) {
-				printf("\r\nCouldnt write");
+				printf("\r\nCouldnt write esc buffer");
 				_delay_ms(50);
 				errorLED();
 			}
@@ -169,47 +78,38 @@ void SDCard_esc(CAN_packet *p) {
 		FINISHED_WRITING_ESC = TRUE;
 		sei();
 	}
-// 	for(int i=0; i<5; i++) {
-// 		if(p->data[i] < 10)
-// 			numBytes = numBytes + 1;
-// 		else if(p->data[i] < 100)
-// 			numBytes = numBytes + 2;
-// 		else
-// 			numBytes = numBytes + 3;
-// 	}
 }
 
 void SDCard_power(CAN_packet *p) {
-	if (FINISHED_LISTENING) {
-		//do nothing
-	} else if (FINISHED_WRITING_POWER && !FINISHED_LISTENING) {
-		cli();
-		FINISHED_WRITING_POWER = FALSE;
-		// write stuff
-		BLUELEDON;
-		GREENLEDOFF;
-		int numBytes = 17;
-		
-		sprintf(buf_power,"%d %d %d %d\r\n", p->data[0], p->data[1], p->data[2], p->data[3]);
+	cli();
+	FINISHED_WRITING_POWER = FALSE;
+	// write stuff
+	BLUELEDON;
+	GREENLEDOFF;
+	int numBytes = 13;
+	uint16_t voltage;
+	voltage = ((p->data[0])<<8);
+	voltage |= (p->data[1]);
+	uint16_t current;
+	current = ((p->data[2])<<8);
+	current |= (p->data[3]);	
+	printf("\r\nVoltage %d current %d", voltage, current);
+	sprintf(buf_power,"%d %d\r\n", current, voltage);
 
-		printf("\r\nWriting %s", buf_power);
-		if (f_write(&file_power, &buf_power, numBytes, &bytesWritten_power) != FR_OK) {
-			while(1) {
-				printf("\r\nCouldnt write");
-				_delay_ms(50);
-				errorLED();
-			}
+	if (f_write(&file_power, &buf_power, numBytes, &bytesWritten_power) != FR_OK) {
+		while(1) {
+			printf("\r\nCouldnt write power buffer");
+			_delay_ms(50);
+			errorLED();
 		}
-		BLUELEDOFF;
-		FINISHED_WRITING_POWER = TRUE;
-		sei();
 	}
+	BLUELEDOFF;
+	FINISHED_WRITING_POWER = TRUE;
+	sei();
 }
 
 void SDCard_sw(CAN_packet *p) {
-	if (FINISHED_LISTENING) {
-		//do nothing
-	} else if (FINISHED_WRITING_SW && !FINISHED_LISTENING) {
+	if(FINISHED_WRITING_SW) {
 		cli();
 		FINISHED_WRITING_SW = FALSE;
 		// write stuff
@@ -218,40 +118,23 @@ void SDCard_sw(CAN_packet *p) {
 		int numBytes = 5;
 		
 		sprintf(buf_sw,"%d\r\n", p->data[1]);
-
-		printf("\r\nWriting %s", buf_sw);
+		
 		if (f_write(&file_sw, &buf_sw, numBytes, &bytesWritten_sw) != FR_OK) {
 			while(1) {
-				printf("\r\nCouldnt write");
+				printf("\r\nCouldnt write sw buffer");
+				printf("\r\nTIMER0_SW_OVF %d", TIMER0_SW_OVF);
 				_delay_ms(50);
 				errorLED();
 			}
 		}
 		BLUELEDOFF;
+		TIMER0_SW_OVF = FALSE;
 		FINISHED_WRITING_SW = TRUE;
 		sei();
 	}
 }
 
-void GPS_callback(CAN_packet *p, unsigned char mob) {
-	(void)mob;
-	switch(p->id) {
-		case ID_steeringWheel:
-			if(FINISHED_WRITING_SW)
-				SDCard_sw(p);
-			break;
-		case ID_power:
-			if(FINISHED_WRITING_POWER)
-				SDCard_power(p);
-			break;
-		case ID_esc_telemetry:
-			if(FINISHED_WRITING_ESC)
-				SDCard_esc(p);
-			break;
-	}
-}
-
-void Initialize(){
+void SDCard_init(){
 	//0 --> Input
 	//1 --> Output
 	DDRB = 0b11100111;

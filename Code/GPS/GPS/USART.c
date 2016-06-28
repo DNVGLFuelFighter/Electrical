@@ -41,7 +41,7 @@ void USART1_Init (unsigned int baud){
 	Enable receiver and transmitter
 	*/
 	UCSR1B = (1<<RXEN1) | (1<<TXEN1);
-	fdevopen(uart_putc1, USART1_Receive);
+// 	fdevopen(uart_putc1, USART1_Receive);
 }
 
 void uart_putc0 (unsigned char data){

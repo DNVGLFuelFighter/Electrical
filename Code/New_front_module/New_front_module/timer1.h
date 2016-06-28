@@ -11,6 +11,7 @@
 #ifndef TIMER1_H_
 #define TIMER1_H_
 
+#include "definitions.h"
 #include <avr/interrupt.h>
 #include "can.h"
 

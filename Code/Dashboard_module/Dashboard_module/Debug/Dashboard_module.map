@@ -3,7 +3,7 @@ Archive member included to satisfy reference by file (symbol)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
                               C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.98/gcc/dev/at90can128/avr51/crtat90can128.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_copy_data.o)
-                              main.o (__do_copy_data)
+                              dashboard_module.o (__do_copy_data)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_clear_bss.o)
                               can.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(memcmp.o)
@@ -77,6 +77,8 @@ Discarded input sections
  .text          0x00000000        0x0 dashboard_module.o
  .data          0x00000000        0x0 dashboard_module.o
  .bss           0x00000000        0x0 dashboard_module.o
+ .rodata.MAX_NUM_REAR_DESIGN
+                0x00000000        0x2 dashboard_module.o
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
@@ -302,7 +304,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xe28
+.text           0x00000000      0xee4
  *(.vectors)
  .vectors       0x00000000       0x94 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.98/gcc/dev/at90can128/avr51/crtat90can128.o
                 0x00000000                __vector_default
@@ -406,75 +408,75 @@ END GROUP
  .text.can_packet_send
                 0x000002ec        0x8 can.o
                 0x000002ec                can_packet_send
- .text.db_init  0x000002f4       0x1e dashboard_module.o
+ .text.db_init  0x000002f4       0x22 dashboard_module.o
                 0x000002f4                db_init
  .text.db_input
-                0x00000312       0x4c dashboard_module.o
-                0x00000312                db_input
- .text.inits    0x0000035e       0x24 main.o
-                0x0000035e                inits
- .text.main     0x00000382        0x6 main.o
-                0x00000382                main
+                0x00000316       0x9c dashboard_module.o
+                0x00000316                db_input
+ .text.inits    0x000003b2       0x24 main.o
+                0x000003b2                inits
+ .text.main     0x000003d6        0x6 main.o
+                0x000003d6                main
  .text.timer0_init
-                0x00000388       0x3a timer0.o
-                0x00000388                timer0_init
+                0x000003dc       0x3c timer0.o
+                0x000003dc                timer0_init
  .text.__vector_17
-                0x000003c2       0xa2 timer0.o
-                0x000003c2                __vector_17
+                0x00000418       0xde timer0.o
+                0x00000418                __vector_17
  .text.timer1_init
-                0x00000464       0x36 timer1.o
-                0x00000464                timer1_init
+                0x000004f6       0x36 timer1.o
+                0x000004f6                timer1_init
  .text.__vector_15
-                0x0000049a       0x96 timer1.o
-                0x0000049a                __vector_15
+                0x0000052c       0xc0 timer1.o
+                0x0000052c                __vector_15
  .text.USART_tx
-                0x00000530       0x12 USART.o
-                0x00000530                USART_tx
+                0x000005ec       0x12 USART.o
+                0x000005ec                USART_tx
  .text.USART_rx
-                0x00000542       0x10 USART.o
-                0x00000542                USART_rx
+                0x000005fe       0x10 USART.o
+                0x000005fe                USART_rx
  .text.USART_init
-                0x00000552       0x2e USART.o
-                0x00000552                USART_init
+                0x0000060e       0x2e USART.o
+                0x0000060e                USART_init
  .text.avr-libc
-                0x00000580       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(memcmp.o)
-                0x00000580                memcmp
+                0x0000063c       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(memcmp.o)
+                0x0000063c                memcmp
  .text.avr-libc
-                0x0000059a       0x94 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(fdevopen.o)
-                0x0000059a                fdevopen
+                0x00000656       0x94 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(fdevopen.o)
+                0x00000656                fdevopen
  .text.avr-libc
-                0x0000062e       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(printf.o)
-                0x0000062e                printf
+                0x000006ea       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(printf.o)
+                0x000006ea                printf
  .text.avr-libc
-                0x00000654      0x3dc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(vfprintf_std.o)
-                0x00000654                vfprintf
+                0x00000710      0x3dc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(vfprintf_std.o)
+                0x00000710                vfprintf
  .text.avr-libc
-                0x00000a30       0x34 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(calloc.o)
-                0x00000a30                calloc
+                0x00000aec       0x34 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(calloc.o)
+                0x00000aec                calloc
  .text.avr-libc
-                0x00000a64      0x25a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
-                0x00000a64                malloc
-                0x00000b8e                free
+                0x00000b20      0x25a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+                0x00000b20                malloc
+                0x00000c4a                free
  .text.avr-libc
-                0x00000cbe       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
-                0x00000cbe                strnlen_P
+                0x00000d7a       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(strnlen_P.o)
+                0x00000d7a                strnlen_P
  .text.avr-libc
-                0x00000cd4        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(memset.o)
-                0x00000cd4                memset
+                0x00000d90        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(memset.o)
+                0x00000d90                memset
  .text.avr-libc
-                0x00000ce2       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
-                0x00000ce2                strnlen
+                0x00000d9e       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(strnlen.o)
+                0x00000d9e                strnlen
  .text.avr-libc
-                0x00000cf8       0x70 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(fputc.o)
-                0x00000cf8                fputc
+                0x00000db4       0x70 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(fputc.o)
+                0x00000db4                fputc
  .text.avr-libc
-                0x00000d68       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
-                0x00000d68                __ultoa_invert
-                0x00000e24                . = ALIGN (0x2)
+                0x00000e24       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(ultoa_invert.o)
+                0x00000e24                __ultoa_invert
+                0x00000ee0                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000e24        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
-                0x00000e24                _exit
-                0x00000e24                exit
+ .fini9         0x00000ee0        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
+                0x00000ee0                _exit
+                0x00000ee0                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -493,11 +495,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000e24        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
+ .fini0         0x00000ee0        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr51\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000e28                _etext = .
+                0x00000ee4                _etext = .
 
-.data           0x00800100       0x1e load address 0x00000e28
+.data           0x00800100       0x38 load address 0x00000ee4
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
@@ -509,41 +511,54 @@ END GROUP
  *(.rodata*)
  .rodata.str1.1
                 0x00800106       0x18 main.o
+ .rodata.str1.1
+                0x0080011e       0x1a timer0.o
+ .rodata.str1.1
+                0x00800138       0x1a timer1.o
  *(.gnu.linkonce.d*)
-                0x0080011e                . = ALIGN (0x2)
-                0x0080011e                _edata = .
-                0x0080011e                PROVIDE (__data_end, .)
+                0x00800152                . = ALIGN (0x2)
+                0x00800152                _edata = .
+                0x00800152                PROVIDE (__data_end, .)
 
-.bss            0x0080011e       0x4e
-                0x0080011e                PROVIDE (__bss_start, .)
+.bss            0x00800138       0x52
+                0x00800138                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.packet.1825
-                0x0080011e        0xb can.o
+                0x00800138        0xb can.o
+ .bss.design_temp
+                0x00800143        0x1 dashboard_module.o
+                0x00800143                design_temp
+ .bss.design_change
+                0x00800144        0x1 dashboard_module.o
+                0x00800144                design_change
+ .bss.num_rear_design
+                0x00800145        0x2 dashboard_module.o
+                0x00800145                num_rear_design
  *(COMMON)
- COMMON         0x00800129       0x1e can.o
-                0x00800129                canlist
- COMMON         0x00800147       0x1b timer0.o
-                0x00800147                diff_speed
-                0x00800149                different
-                0x0080014b                ret
-                0x0080014c                updated_msg
-                0x00800157                current_msg
- COMMON         0x00800162        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(iob.o)
-                0x00800162                __iob
- COMMON         0x00800168        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
-                0x00800168                __brkval
-                0x0080016a                __flp
-                0x0080016c                PROVIDE (__bss_end, .)
-                0x00000e28                __data_load_start = LOADADDR (.data)
-                0x00000e46                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800147       0x1e can.o
+                0x00800147                canlist
+ COMMON         0x00800165       0x1b timer0.o
+                0x00800165                diff_speed
+                0x00800167                different
+                0x00800169                ret
+                0x0080016a                updated_msg
+                0x00800175                current_msg
+ COMMON         0x00800180        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(iob.o)
+                0x00800180                __iob
+ COMMON         0x00800186        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/../../../../avr/lib/avr51\libc.a(malloc.o)
+                0x00800186                __brkval
+                0x00800188                __flp
+                0x0080018a                PROVIDE (__bss_end, .)
+                0x00000ee4                __data_load_start = LOADADDR (.data)
+                0x00000f1c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080016c        0x0
-                0x0080016c                PROVIDE (__noinit_start, .)
+.noinit         0x0080018a        0x0
+                0x0080018a                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0080016c                PROVIDE (__noinit_end, .)
-                0x0080016c                _end = .
-                0x0080016c                PROVIDE (__heap_start, .)
+                0x0080018a                PROVIDE (__noinit_end, .)
+                0x0080018a                _end = .
+                0x0080018a                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -638,65 +653,65 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xc18
+.debug_info     0x00000000      0xbde
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x30f can.o
- .debug_info    0x0000030f      0x108 dashboard_module.o
- .debug_info    0x00000417      0x176 main.o
- .debug_info    0x0000058d      0x242 timer0.o
- .debug_info    0x000007cf      0x206 timer1.o
- .debug_info    0x000009d5      0x243 USART.o
+ .debug_info    0x0000030f      0x164 dashboard_module.o
+ .debug_info    0x00000473      0x176 main.o
+ .debug_info    0x000005e9      0x16d timer0.o
+ .debug_info    0x00000756      0x245 timer1.o
+ .debug_info    0x0000099b      0x243 USART.o
 
-.debug_abbrev   0x00000000      0x74f
+.debug_abbrev   0x00000000      0x729
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x18d can.o
- .debug_abbrev  0x0000018d       0xbe dashboard_module.o
- .debug_abbrev  0x0000024b       0xe8 main.o
- .debug_abbrev  0x00000333      0x143 timer0.o
- .debug_abbrev  0x00000476      0x174 timer1.o
- .debug_abbrev  0x000005ea      0x165 USART.o
+ .debug_abbrev  0x0000018d       0xd8 dashboard_module.o
+ .debug_abbrev  0x00000265       0xe8 main.o
+ .debug_abbrev  0x0000034d       0xe0 timer0.o
+ .debug_abbrev  0x0000042d      0x197 timer1.o
+ .debug_abbrev  0x000005c4      0x165 USART.o
 
-.debug_line     0x00000000      0xa63
+.debug_line     0x00000000      0xaeb
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x37e can.o
- .debug_line    0x0000037e      0x16e dashboard_module.o
- .debug_line    0x000004ec      0x138 main.o
- .debug_line    0x00000624      0x159 timer0.o
- .debug_line    0x0000077d      0x191 timer1.o
- .debug_line    0x0000090e      0x155 USART.o
+ .debug_line    0x0000037e      0x1cd dashboard_module.o
+ .debug_line    0x0000054b      0x138 main.o
+ .debug_line    0x00000683      0x16b timer0.o
+ .debug_line    0x000007ee      0x1a8 timer1.o
+ .debug_line    0x00000996      0x155 USART.o
 
-.debug_frame    0x00000000      0x2d4
+.debug_frame    0x00000000      0x2f8
  *(.debug_frame)
  .debug_frame   0x00000000       0xd8 can.o
  .debug_frame   0x000000d8       0x34 dashboard_module.o
  .debug_frame   0x0000010c       0x40 main.o
- .debug_frame   0x0000014c       0x7c timer0.o
- .debug_frame   0x000001c8       0xac timer1.o
- .debug_frame   0x00000274       0x60 USART.o
+ .debug_frame   0x0000014c       0xa0 timer0.o
+ .debug_frame   0x000001ec       0xac timer1.o
+ .debug_frame   0x00000298       0x60 USART.o
 
-.debug_str      0x00000000      0x353
+.debug_str      0x00000000      0x391
  *(.debug_str)
  .debug_str     0x00000000      0x1e1 can.o
                                 0x22b (size before relaxing)
- .debug_str     0x000001e1       0x29 dashboard_module.o
-                                0x1c2 (size before relaxing)
- .debug_str     0x0000020a       0x47 main.o
+ .debug_str     0x000001e1       0x67 dashboard_module.o
+                                0x205 (size before relaxing)
+ .debug_str     0x00000248       0x47 main.o
                                 0x1da (size before relaxing)
- .debug_str     0x00000251       0x4e timer0.o
-                                0x211 (size before relaxing)
- .debug_str     0x0000029f       0x49 timer1.o
-                                0x20c (size before relaxing)
- .debug_str     0x000002e8       0x6b USART.o
+ .debug_str     0x0000028f       0x4e timer0.o
+                                0x1f8 (size before relaxing)
+ .debug_str     0x000002dd       0x49 timer1.o
+                                0x213 (size before relaxing)
+ .debug_str     0x00000326       0x6b USART.o
                                 0x1fa (size before relaxing)
 
-.debug_loc      0x00000000      0x723
+.debug_loc      0x00000000      0x7b2
  *(.debug_loc)
  .debug_loc     0x00000000      0x3d0 can.o
  .debug_loc     0x000003d0       0x48 dashboard_module.o
  .debug_loc     0x00000418       0x3c main.o
- .debug_loc     0x00000454       0xcb timer0.o
- .debug_loc     0x0000051f      0x11c timer1.o
- .debug_loc     0x0000063b       0xe8 USART.o
+ .debug_loc     0x00000454      0x15a timer0.o
+ .debug_loc     0x000005ae      0x11c timer1.o
+ .debug_loc     0x000006ca       0xe8 USART.o
 
 .debug_macinfo
  *(.debug_macinfo)

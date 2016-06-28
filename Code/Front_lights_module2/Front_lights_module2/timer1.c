@@ -63,22 +63,21 @@ void TIM16_WriteTCNT1(unsigned int i) {
 
 
 ISR(TIMER1_OVF_vect) {
-	/* Indicator lights */
-	if ((!EMERG) && IND_LEFT) {
+	/* Indicator and Emergency lights */
+	/*if (IND_LEFT || EMERG) {*/
+	if (IND_LEFT) {
 		// toggle the left indicator
 		front_toggle_ind_left();
-	} else 
+	} else {
 		front_lights_turn_left(FALSE);
-	if ((!EMERG) && IND_RIGHT) {
+	}
+	/*if (IND_RIGHT || EMERG) {*/
+	if (IND_RIGHT) {
 		// toggle the right indicator
 		front_toggle_ind_right();
-	} else
+	} else {
 		front_lights_turn_right(FALSE);
-	/* Emergency lights */
-// 	if (EMERG) {
-// 		front_ind_left(EMERG);
-// 		front_ind_right(EMERG);	
-// 	}
+	}
 	/* Send a "I'm alive" message with the data */
 	CAN_packet p;
 	BOOL ret = FALSE;
@@ -86,7 +85,7 @@ ISR(TIMER1_OVF_vect) {
 	p.length = 1;
 	cli();
 	get_light_status(&p);
-	ret = can_packet_send(10, &p);
+	ret = can_packet_send(5, &p);
 	sei();
 	if(ret)
 		toggle_bit(DDRB, PB5);

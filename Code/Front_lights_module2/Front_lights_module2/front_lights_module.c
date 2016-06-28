@@ -100,15 +100,16 @@ void front_lights_turn_right( BOOL on) {
 
 void front_light_handler(CAN_packet *p, unsigned char mob) {
 	(void)mob;
-	
+// 	printf("\r\nMessage received: ID-%d, length-%d, data[0]-%d", p->id
+// 	, p->length, p->data[0]);
 	if (p->id == ID_dashboard) {
 		/* Headlights near and far */
 		if (p->data[0] & HEADLIGHTS_NEAR) {
-			front_lights_headlights(30);
+			front_lights_headlights(20);
 			SHORT_LIGHT = TRUE;
 			FAR_LIGHT = FALSE;
 		} else if (p->data[0] & HEADLIGHTS_FAR) {
-			front_lights_headlights(150);
+			front_lights_headlights(100);
 			SHORT_LIGHT = FALSE;
 			FAR_LIGHT = TRUE;
 		} else {
@@ -116,12 +117,21 @@ void front_light_handler(CAN_packet *p, unsigned char mob) {
 			SHORT_LIGHT = FALSE;
 			FAR_LIGHT = FALSE;
 		}
-		/* Eyebrows */
-		front_lights_eyebrows(p->data[0] & EYEBROWS);
-		/* Angel eyes */
+		/* Eyebrows*/
+		if(!IND_LEFT && !IND_RIGHT) {
+			front_lights_eyebrows(p->data[0] & EYEBROWS);
+		}
+		/*Angel eyes */
 		front_lights_angel_eyes(p->data[0] & ANGEL_EYES);
 		/* Emergency lights */
-		front_emergency(p->data[0] & EMERGENCY);
+		if(p->data[0] & EMERGENCY) {
+			IND_LEFT = TRUE;
+			IND_RIGHT = TRUE;
+		} else {
+			IND_LEFT = FALSE;
+			IND_RIGHT = FALSE;
+		}
+		//front_emergency(p->data[0] & EMERGENCY);
 	} else if (p->id == ID_steeringWheel) {
 		/* Right turn signal */
 		front_ind_right(p->data[0] & INDICATOR_RIGHT);
@@ -150,21 +160,25 @@ void front_emergency( BOOL on) {
 }
 
 void front_ind_left( BOOL on) {
-	if(on)
-		if(!IND_LEFT)
-			IND_LEFT = TRUE;
-	else
-		if(IND_LEFT)
-			IND_LEFT = FALSE;
+	IND_LEFT = on;
+// 	if(on) {
+// 		if(!IND_LEFT)
+// 			IND_LEFT = TRUE;
+// 	} else {
+// 		if(IND_LEFT)
+// 			IND_LEFT = FALSE;
+// 	}
 }
 
 void front_ind_right( BOOL on) {
-	if(on)
-		if(!IND_RIGHT)
-			IND_RIGHT = TRUE;
-	else
-		if(IND_RIGHT)
-			IND_RIGHT = FALSE;
+	IND_RIGHT = on;
+// 	if(on) {
+// 		if(!IND_RIGHT)
+// 			IND_RIGHT = TRUE;
+// 	} else {
+// 		if(IND_RIGHT)
+// 			IND_RIGHT = FALSE;
+// 	}
 }
 
 BOOL get_ind_left( void) {
@@ -189,7 +203,7 @@ void get_light_status(CAN_packet* p) {
 		p->data[0] |= (1<<0);
 	if(FAR_LIGHT)
 		p->data[0] |= (1<<1);
-	if(get_ind_left)
+	if(get_ind_left())
 		p->data[0] |= (1<<2);
 	if(get_ind_right())
 		p->data[0] |= (1<<3);
@@ -197,12 +211,11 @@ void get_light_status(CAN_packet* p) {
 		p->data[0] |= (1<<4);
 	if(get_angel())
 		p->data[0] |= (1<<5);
-	if(EMERG)
+	if(IND_LEFT && IND_RIGHT)
 		p->data[0] |= (1<<6);
 }
 
 void light_show() {
-	printf("\r\nPrepare for a light show");
 	int cntr = 0;
 	int off = 5;
 	while(off) {

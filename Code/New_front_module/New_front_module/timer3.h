@@ -11,13 +11,9 @@
 
 #include "front_module.h"
 #include <avr/interrupt.h>
+#include "definitions.h"
 #include <util/delay.h>
 
 void timer3_init( void);
-
-
-
-
-
 
 #endif /* TIMER3_H_ */

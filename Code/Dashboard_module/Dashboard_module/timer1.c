@@ -67,13 +67,17 @@ ISR(TIMER1_OVF_vect) {
 	BOOL ret = FALSE;
 	
 	msg.id = ID_dashboard;
-	msg.length = 1;
+	msg.length = 2;
 	cli();
 	db_input(&msg);
 	//msg.data[0] = msg.data[0] & (1<<4); //check for emerg button
 	ret = can_packet_send(1, &msg);
 	sei();
-	if(ret)
+	if(ret) {
 		toggle_bit(DDRB, PB5);
+		/* DEBUG */
+		printf("\r\ndata[0]-%d", msg.data[0]);
+		printf("\r\ndata[1]-%d", msg.data[1]);
+	}
 	ret = FALSE;
 }

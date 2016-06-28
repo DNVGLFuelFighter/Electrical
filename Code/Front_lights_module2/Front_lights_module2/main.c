@@ -7,14 +7,15 @@
 
 /* TODO: Implement handshake in can messages */
 
-#include <avr/interrupt.h>
 #include "definitions.h"
+#include <avr/interrupt.h>
 #include "can.h"
 #include "USART.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include "front_lights_module.h"
 #include "timer1.h"
+#include "timer0.h"
 
 void inits(void) {
 	can_init();
@@ -30,14 +31,15 @@ void inits(void) {
 
 int main(void)
 {
+	cli();
 	inits();
-	
 	prepare_rx(0, ID_steeringWheel, MASK_FRONT_LIGHTS, front_light_handler);
 	/* Set global interrupts */
 	sei();
 	
-	for(;;)
+	for(;;) {
 		asm("sleep");;
+	}
 	return 0;
 }
 

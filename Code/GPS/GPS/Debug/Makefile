@@ -40,7 +40,10 @@ C_SRCS +=  \
 ../can.c \
 ../diskio.c \
 ../ff.c \
+../main.c \
+../SDCard2.c \
 ../SDCard.c \
+../timer0.c \
 ../USART.c
 
 
@@ -54,28 +57,40 @@ OBJS +=  \
 can.o \
 diskio.o \
 ff.o \
+main.o \
+SDCard2.o \
 SDCard.o \
+timer0.o \
 USART.o
 
 OBJS_AS_ARGS +=  \
 can.o \
 diskio.o \
 ff.o \
+main.o \
+SDCard2.o \
 SDCard.o \
+timer0.o \
 USART.o
 
 C_DEPS +=  \
 can.d \
 diskio.d \
 ff.d \
+main.d \
+SDCard2.d \
 SDCard.d \
+timer0.d \
 USART.d
 
 C_DEPS_AS_ARGS +=  \
 can.d \
 diskio.d \
 ff.d \
+main.d \
+SDCard2.d \
 SDCard.d \
+timer0.d \
 USART.d
 
 OUTPUT_FILE_PATH +=GPS.elf
@@ -92,6 +107,12 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
+
+
 
 
 

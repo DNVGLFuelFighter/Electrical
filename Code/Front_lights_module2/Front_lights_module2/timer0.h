@@ -13,8 +13,6 @@
 #include "front_lights_module.h"
 #include <avr/interrupt.h>
 
-int timer0_int = 0;
-
 void timer0_init( void);
 
 

@@ -1,4 +1,5 @@
 /*
+
  * New_front_module.c
  *
  * Created: 4/8/2016 5:50:54 PM
@@ -14,7 +15,7 @@
 #include "USART.h"
 #include "front_module.h"
 
-// 16 bit timers
+// Timers
 #include "timer0.h"
 #include "timer1.h"
 #include "timer3.h"	
@@ -25,17 +26,19 @@ int main(void)
 {
 	/* Initialize module */
     inits();
-	
     for(;;) {
 		fm_horn_handler();
 		fm_wipers_handler();
 		fm_fans_handler();
+		_delay_ms(10);
+		
 		asm("sleep");
 	}
 	return 0;
 }
 
 void inits( void) {
+	cli();
 	USART_init(MYUBRR, TRUE);
 	can_init();
 	spi_init_master();
@@ -43,6 +46,7 @@ void inits( void) {
 	timer0_init();
 	timer1_init();
 	//TODO: RUN timer3_init();
+	timer3_init();
 	prepare_rx(1, ID_steeringWheel, MASK_FRONT_MODULE, fm_msg_handler);
 	printf("\r\nFront module initialized");
 	sei();

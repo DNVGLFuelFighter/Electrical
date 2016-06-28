@@ -8,6 +8,7 @@
 
 #include "definitions.h"
 #include "can.h"
+#include "dashboard_module.h"
 
 #ifndef TIMER0_H_
 #define TIMER0_H_

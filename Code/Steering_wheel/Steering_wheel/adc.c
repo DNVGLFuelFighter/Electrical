@@ -38,7 +38,7 @@ void adc_input( int chan, CAN_packet* p) {
 	while(test_bit(ADCSRA, ADSC));
 	
 	unsigned int full_value = 0;
-	full_value = ADC + 30;
+	full_value = ADC;
 	if(full_value > 255)
 		full_value = 255;
 	else if(full_value < 0)

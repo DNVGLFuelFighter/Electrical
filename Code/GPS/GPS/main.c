@@ -8,13 +8,17 @@
 
 #include <avr/io.h>
 #include "definitions.h"
+#include "ff.h"
+#include "diskio.h"
 #include "USART.h"
 #include "can.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <util/delay.h>
+#include "SDCard.h"
 
-typedef enum {TIME, LAT, LAT_IND, LONG, LONG_IND, POSFIX, NRSAT} gps_msg_index_t;
+typedef enum {TIME, LAT, LAT_IND, LONGT, LONG_IND, POSFIX, NRSAT} gps_msg_index_t; //changed LONG to LONGT
 typedef enum {ID, GPGGA, MESSAGE} gps_index_t;
 	
 #define GPS_TIME_ID	21
@@ -43,25 +47,27 @@ volatile bool msg_done = false;
 #define LED_GREEN PB6
 #define LED_RED	PB5
 
+BOOL FINISHED_LISTENING = TRUE;
+BOOL FINISHED_WRITING_ESC = TRUE;
+BOOL FINISHED_WRITING_POWER = TRUE;
+BOOL FINISHED_WRITING_SW = TRUE;
+
 void inits( void) {
+	USART0_Init(MYUBRR0);
+	USART1_Init(MYUBRR1);
 	can_init();
-	USART_init(MYUBRR0, TRUE);
-	
+	timer0_init();
+	SDCard_init();
 	//PORTF |= (1<<PF3); // GPS CS HIGH
 	
 	//LEDS on UM
 	DDRB |= (1<<LED_RED) | (1<<LED_GREEN) | (1<<LED_BLUE);
 	PORTB |= (1<<LED_BLUE) | (1<<LED_GREEN);
 	PORTB &= ~(1<<LED_RED);
-	
-	printf("\n\rGPS module initialized");
 }
 
 int main(void)
-{
-	/* Initialize module */
-	inits();
-	
+{	
 	CAN_packet can_time;
 	can_time.id = GPS_TIME_ID;
 	can_time.length = 8;
@@ -82,6 +88,39 @@ int main(void)
 	can_long2.id = GPS_LONG2_ID;
 	can_long2.length = 8;
 	
+	FATFS fs;
+	
+	uint8_t result;
+	BOOL SDCard_closed = FALSE;
+	
+	/* Initialize module */
+	inits();
+	result = initializeFAT(&fs);
+	
+	if (result != 0)
+		while(1)
+			errorLED();
+			
+	printf("\r\nGPS initialized");
+	
+	//Open a text file on the SD Card
+	if(f_open(&file_sw, "/SW.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
+		while (1)
+		errorLED();
+	}
+	if(f_open(&file_power, "/POWER.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
+		while (1)
+		errorLED();
+	}
+	if(f_open(&file_esc, "/ESC.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK){
+		while (1)
+		errorLED();
+	}
+	//Delay to ensure things are all set up and SD card is ready to receive more commands
+	_delay_ms(500);
+	
+	prepare_rx(0, ID_steeringWheel, MASK_GPS, SDCard_callback);
+	UCSR1B |= (1<<RXCIE1);
 	sei();
 	
     for(;;) {
@@ -125,7 +164,7 @@ int main(void)
 			can_tx(10, &can_long2);
 			//uart_putc0('\n');
 			
-			if (gps_pos_fix[0] = '1') {
+			if (gps_pos_fix[0] == '1') {
 				printf("\r\ngps_pos_fix[0] = '1'");
 				PORTB |= (1<<LED_RED);
 				PORTB &= ~(1<<LED_GREEN);
@@ -134,46 +173,50 @@ int main(void)
 				PORTB |= (1<<LED_GREEN);
 				PORTB &= ~(1<<LED_RED);
 			}
-			
-			/*
-			uart_puts0("Time: ");
-			uart_puts0(gps_time);
-			uart_putc0('\n');
-			
-			uart_puts0("Latitude: ");
-			uart_puts0(gps_lat);
-			uart_putc0('\n');
-			
-			uart_puts0("Latitude indicator: ");
-			uart_puts0(gps_lat_ind);
-			uart_putc0('\n');
-			
-			uart_puts0("Longitude: ");
-			uart_puts0(gps_long);
-			uart_putc0('\n');
-			
-			uart_puts0("Longitude indicator: ");
-			uart_puts0(gps_long_ind);
-			uart_putc0('\n');
-			
-			uart_puts0("Position fix: ");
-			uart_puts0(gps_pos_fix);
-			uart_putc0('\n');
-			
-			uart_puts0("Nr of satelites: ");
-			uart_puts0(gps_nr_sat);
-			uart_putc0('\n');
-			*/
-			
-			//uart_putc0('\n');
 			msg_done = false;
+		} // if statement
+		if(SDCard_closed){
+			finishedLED();
+		} else if (!test_bit(PINE, PE3)) {
+			// turn off the timer0
+			clear_bit(TIMSK0, TOIE0);
+			TIMER0_SW_OVF = FALSE;
+			FINISHED_LISTENING = TRUE;
+			if (FINISHED_WRITING_SW && FINISHED_WRITING_POWER && FINISHED_WRITING_ESC && !SDCard_closed) {
+				printf("\r\nClosing SD Card.");
+				if (f_close(&file_sw) != FR_OK){
+					while (1) {
+						printf("\r\nCouldn't close SD Card.");
+						_delay_ms(100);
+						errorLED();
+					}
+				}
+				if (f_close(&file_power) != FR_OK){
+					while (1) {
+						printf("\r\nCouldn't close SD Card.");
+						_delay_ms(100);
+						errorLED();
+					}
+				}
+				if (f_close(&file_esc) != FR_OK){
+					while (1) {
+						printf("\r\nCouldn't close SD Card.");
+						_delay_ms(100);
+						errorLED();
+					}
+				}
+				f_mount(0,0);
+				printf("\r\nSD Card closed.");
+				
+				SDCard_closed = TRUE;
+			}
 		}
 		asm("sleep");
     }
 }
 
-ISR(USART0_RX_vect) {
-	unsigned char c = USART_rx();
+ISR(USART1_RX_vect) {
+	unsigned char c = USART1_Receive();
 	printf("\r\n%c", c);
 	switch(gps_index){
 		case ID:
@@ -221,7 +264,7 @@ ISR(USART0_RX_vect) {
 					case LAT_IND:
 						strcpy(gps_lat_ind, bufferIn);
 						break;
-					case LONG:
+					case LONGT:
 						strcpy(gps_long, bufferIn);
 						break;
 					case LONG_IND:

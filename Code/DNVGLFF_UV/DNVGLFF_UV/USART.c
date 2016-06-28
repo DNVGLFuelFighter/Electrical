@@ -23,6 +23,7 @@ void USART_init(unsigned int baud, _Bool onOff) {
 		set_bit(UCSR0B,	RXEN0);
 		set_bit(UCSR0B, TXEN0);
 	}
+	set_bit(UCSR0B, RXCIE0);
 	/*!	enables using fprint() instead of USART_tx_string() */
 	fdevopen(USART_tx, USART_rx);
 }

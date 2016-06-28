@@ -20,16 +20,7 @@ void timer1_init( void) {
 	
 	/* Enable global interrupts*/
 	sei();
-	
-	/*
-	unsigned int i;
-	// How to access the 16-bit timer registers 
-	// Set TCT1 to 0x01FF 
-	TCNT1 = 0x1FF;
-	// Read TCNT1 into i 
-	i = TCNT1;
-	*/
-	
+		
 	/* Use CTC mode */
 	set_bit(TCCR1A, COM1A1);
 	clear_bit(TCCR1A, COM1A0);
@@ -72,6 +63,7 @@ ISR(TIMER1_OVF_vect) {
 	cli();
 	if(test_bit(PINE, PE5))
 		msg.data[0] = 1;
+	printf("\r\nmsg.data[0] = %d", msg.data[0]);
 	ret = can_packet_send(0, &msg);
 	sei();
 	if(ret)
