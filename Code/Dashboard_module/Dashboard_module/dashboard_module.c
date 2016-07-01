@@ -8,7 +8,7 @@
 #include "dashboard_module.h"
 
 int num_rear_design = 0;
-const int MAX_NUM_REAR_DESIGN = 5;
+const int MAX_NUM_REAR_DESIGN = 2;
 BOOL design_change = FALSE;
 BOOL design_temp = FALSE;
 

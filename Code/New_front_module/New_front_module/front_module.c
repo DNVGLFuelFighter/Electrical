@@ -16,7 +16,6 @@ int duty = 1500;
 
 void fm_msg_handler(CAN_packet* p, unsigned char mob) {
 	(void)mob;
-	printf("\r\nMessage received");
 	switch(p->id) {
 		case ID_steeringWheel:
 			if(p->data[0] & (1<<4))
@@ -49,7 +48,7 @@ void fm_wipers_handler( void) {
 		fm_wipers(6); // <6 VDC
 		if(CW) {
 			CCW = FALSE;
-			if(duty < 2200) {
+			if(duty < 1600) { // MAX 2200
 // 				if(cnt == 100) {
 // 					duty = duty+1;
 // 					cnt = 0;
@@ -62,7 +61,7 @@ void fm_wipers_handler( void) {
 		}
 		if (CCW) {
 			CW = FALSE;
-			if(duty > 1500) {
+			if(duty > 1100) { // MIN 1500
 // 				if(cnt==100) {
 // 					duty = duty-1;
 // 					cnt = 0;
@@ -107,7 +106,6 @@ void fm_brake_watcher(CAN_packet* msg_old, CAN_packet* msg_new){
 // 	} else
 // 		ret = FALSE;
 	if(ret) {
-		//printf("\r\nBrakes");
 		set_bit(DDRB, PB7);
 	}
 	else

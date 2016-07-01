@@ -63,7 +63,6 @@ ISR(TIMER1_OVF_vect) {
 	cli();
 	if(test_bit(PINE, PE5))
 		msg.data[0] = 1;
-	printf("\r\nmsg.data[0] = %d", msg.data[0]);
 	ret = can_packet_send(0, &msg);
 	sei();
 	if(ret)

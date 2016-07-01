@@ -10,6 +10,7 @@
 /* Init variables */
 int diff_buttons;
 int diff_speed;
+int diff_cc;
 BOOL ret;
 BOOL turned;
 /* Make two CAN packets */
@@ -25,14 +26,16 @@ void timer0_init( void) {
 	set_bit(TIMSK0, TOIE0);
 	
 	current_msg.id = ID_steeringWheel;
-	current_msg.length = 2;
+	current_msg.length = 3;
 	current_msg.data[0] = 0;
 	current_msg.data[1] = 0;
+	current_msg.data[2] = 0;
 	/*current_msg.data[2] = 0;*/
 	updated_msg.id = ID_steeringWheel;
-	updated_msg.length = 2;
+	updated_msg.length = 3;
 	updated_msg.data[0] = 0;
 	updated_msg.data[1] = 0;
+	updated_msg.data[2] = 0;
 	/*current_msg.data[2] = 0;*/
 	ret = FALSE;
 	/*turned = TRUE;*/
@@ -57,8 +60,9 @@ ISR(TIMER0_OVF_vect) {
 	/* Compare the two packets */
 	diff_buttons = memcmp(&current_msg.data[0], &updated_msg.data[0], 1);
 	diff_speed = memcmp(&updated_msg.data[1], &current_msg.data[1], 1);
+	diff_cc = memcmp(&updated_msg.data[2], &current_msg.data[2], 1);
 
-	if (((diff_speed < 100) &&(abs(diff_speed) > 3)) || abs(diff_buttons)) {
+	if (((diff_speed < 100) &&(abs(diff_speed) > 3)) || abs(diff_buttons) || abs(diff_cc)) {
 // 		printf("\r\nCurrent ID %d, d[0] %d, d[1] %d", current_msg.id, current_msg.data[0], current_msg.data[1]);
 // 		printf("\r\nUpdated ID %d, d[0] %d, d[1] %d", updated_msg.id, updated_msg.data[0], updated_msg.data[1]);
 // 		printf("\r\ndiff_buttons - %d", diff_buttons);

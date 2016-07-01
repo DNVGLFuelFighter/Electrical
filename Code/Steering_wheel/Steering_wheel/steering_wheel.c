@@ -8,9 +8,16 @@
 #include "steering_wheel.h"
 
 BOOL sw_ind_right_change = FALSE;
-BOOL sw_ind_right_temp = FALSE;
 BOOL sw_ind_left_change = FALSE;
+BOOL sw_ind_right_temp = FALSE;
 BOOL sw_ind_left_temp = FALSE;
+BOOL sw_ind_logic = FALSE;
+BOOL sw_cc_minus_temp = FALSE;
+BOOL sw_cc_minus_change = FALSE;
+BOOL sw_cc_plus_temp = FALSE;
+BOOL sw_cc_plus_change = FALSE;
+
+uint8_t cc_value = 0;
 
 void sw_init( void) {	
 	/* Indicators init */
@@ -48,32 +55,52 @@ void sw_input( CAN_packet* p) {
 	p->data[1] = 0;
 	p->data[2] = 0;
 	/* Read right/left indicator */
-	sw_ind_right_temp = !test_bit(PIND, PD0); 
-	if(sw_ind_right_temp == TRUE && sw_ind_right_change == FALSE && sw_ind_left_change == FALSE) {
-		sw_ind_right_change == TRUE;
+	if(!test_bit(PIND, PD0))
 		p->data[0] |= (1<<0);
-	} else {
-		sw_ind_right_change = sw_ind_right_temp;
-	}
-	sw_ind_left_temp = !test_bit(PINE, PE4);
-	if(sw_ind_left_temp == TRUE && sw_ind_left_change == FALSE && sw_ind_right_change == FALSE) {
-		sw_ind_left_change = TRUE;
+	else if(!test_bit(PINE, PE4))
 		p->data[0] |= (1<<1);
-	} else {
-		sw_ind_left_change = sw_ind_left_temp;
-	}
+// 	sw_ind_right_temp = !test_bit(PIND, PD0); 
+// 	if((sw_ind_right_temp == TRUE && sw_ind_right_change == FALSE && sw_ind_left_change == FALSE)) {
+// 		sw_ind_right_change = TRUE;
+// 		/*sw_ind_logic = 1;*/
+// 		p->data[0] |= (1<<0);
+// 	} else if (sw_ind_right_temp == TRUE && sw_ind_right_change == TRUE /*&& sw_ind_logic == 1*/) {
+// 		sw_ind_right_change = FALSE;
+// 		/*sw_ind_logic = 0;*/
+// 	}
+// 	sw_ind_left_temp = !test_bit(PINE, PE4);
+// 	if(sw_ind_left_temp == TRUE && sw_ind_left_change == FALSE && sw_ind_right_change == FALSE) {
+// 		sw_ind_left_change = TRUE;
+// 		p->data[0] |= (1<<1);
+// 	} else {
+// 		sw_ind_left_change = sw_ind_left_temp;
+// 	}
 	/* Read cruise control */
-	if(!test_bit(PINB, PB2)) // CC plus
-		p->data[0] |= (1<<2);
-	else if(!test_bit(PINB, PB1)) // CC minus
-		p->data[0] |= (1<<3);	
+	sw_cc_minus_temp = !test_bit(PINB, PB1);
+	sw_cc_plus_temp = !test_bit(PINB, PB2);
+	if(sw_cc_minus_temp == TRUE && sw_cc_minus_change == FALSE){
+		sw_cc_minus_change = TRUE;
+		if(cc_value < 230)
+		cc_value = cc_value+25;
+	}else if(sw_cc_plus_temp == TRUE && sw_cc_plus_change == FALSE){
+		sw_cc_plus_change = TRUE;
+		if(cc_value > 25)
+			cc_value = cc_value-25;
+	}
+	sw_cc_minus_change = sw_cc_minus_temp;
+	sw_cc_plus_change = sw_cc_plus_temp;
+	p->data[2] = cc_value;
 	/* Read horn */
 	if (!test_bit(PINB, PB0))
 		p->data[0] |= (1<<4);
-	/* Read whiper */
+	/* Read wiper */
 	if (!test_bit(PINE, PE5))
 		p->data[0] |= (1<<5);
 	/* Read CC deadman */
 	if (!test_bit(PINB, PB4))
 		p->data[0] |= (1<<6);
+	else{
+		cc_value = 0;
+		p->data[2] = 0;
+	}
 }

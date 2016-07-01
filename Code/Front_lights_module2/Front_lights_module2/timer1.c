@@ -79,15 +79,15 @@ ISR(TIMER1_OVF_vect) {
 		front_lights_turn_right(FALSE);
 	}
 	/* Send a "I'm alive" message with the data */
-	CAN_packet p;
-	BOOL ret = FALSE;
-	p.id = ID_lightsFront;
-	p.length = 1;
-	cli();
-	get_light_status(&p);
-	ret = can_packet_send(5, &p);
-	sei();
-	if(ret)
-		toggle_bit(DDRB, PB5);
-	ret = FALSE;
+// 	CAN_packet p;
+// 	BOOL ret = FALSE;
+// 	p.id = ID_lightsFront;
+// 	p.length = 1;
+// 	cli();
+// 	get_light_status(&p);
+// 	ret = can_packet_send(5, &p);
+// 	sei();
+// 	if(ret)
+	toggle_bit(DDRB, PB5);
+	/*ret = FALSE;*/
 }

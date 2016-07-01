@@ -50,9 +50,4 @@ ISR(TIMER0_OVF_vect) {
 		ret = can_packet_send(0, &updated_msg);
 		current_msg = updated_msg;	
 	}
-	if (ret) {
-		set_bit(DDRB, DDB7);
-		ret = FALSE;
-	} else
-		clear_bit(DDRB, DDB7);
 }

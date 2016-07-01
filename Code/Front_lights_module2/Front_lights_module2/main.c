@@ -22,7 +22,7 @@ void inits(void) {
 	USART_init(MYUBRR, true);
 	front_lights_init();
 	timer1_init();
-	timer0_init();
+	//timer0_init();
 	
 	printf("\r\nFront lights initialized\n");
 	set_bit(DDRB, DDB6);

@@ -12,7 +12,6 @@
 #include <avr/interrupt.h>
 #include <inttypes.h>
 #include <avr/io.h>
-#include <util/delay.h>
 #include <string.h>
 
 #include "main.h"
@@ -77,20 +76,23 @@ int main(void)
 void send_speed_data(double vehicle_speed)
 {
 	CAN_packet send;
-	
+	BOOL ret = FALSE;
 		
 	uint16_t toSend = (uint16_t)(vehicle_speed*100);
 	send.id = ID_hallSensor;
 	send.length = 2;
-		
+	
 	send.data[1] = toSend & 0xff;
 	send.data[0] = (toSend >> 8) & 0xff;
 		
 	cli();
-	
-	can_tx(0x01, &send);
+	ret = can_tx(0x01, &send);
+	if (ret) {
+		set_bit(DDRB, DDB7);
+		ret = FALSE;
+	} else
+	clear_bit(DDRB, DDB7);
 	sei();
-		
 }
 
 

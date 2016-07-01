@@ -28,9 +28,9 @@ void CAN_messageRX(CAN_packet *p, unsigned char mob) {
 // 		printf("\r\nSpeed - %u m/s", data);
 // 	}
 	/***********************************************************
-	Printing fuction for the throttle input
+	Printing function for the throttle input
 	***********************************************************/
-	/*if (p->id == 13) {*/
+	if (p->id == 15) {
 		printf("\r\nMessage ID - %d", p->id);
 		printf("\r\nMessage length - %d", p->length);
 		for(int i = 0; i < p->length; i++) {
@@ -38,7 +38,7 @@ void CAN_messageRX(CAN_packet *p, unsigned char mob) {
 			printf("\r\nData[%d] received - %u", i, p->data[i]);
 		}
 		printf("\n");
-	/*}*/
+	}
 }
 
 void inits(void) {
@@ -56,12 +56,11 @@ int main(void) {
 	PORTB |= (1<<PB5);
 	
 	BOOL ret;	
-	ret = prepare_rx(0, 20, 0, CAN_messageRX);
+	ret = prepare_rx(0, ID_steeringWheel, MASK_MOTOR_MODULE, CAN_messageRX);
 
 	sei();
 	
 	CAN_packet message;
-	char MOb = 14;
 	message.id = ID_lightsFront;
 	message.length = 1;
 	message.data[0] = 0b000000;	// For message structure see front light module documentation
@@ -81,11 +80,11 @@ int main(void) {
 // 		}
     }
 }
-
-ISR(USART0_RX_vect) {
-	unsigned char c = USART_rx();
-	printf("\r\n%c", c);
-}
+// 
+// ISR(USART0_RX_vect) {
+// 	unsigned char c = USART_rx();
+// 	printf("\r\n%c", c);
+// }
 
 
 

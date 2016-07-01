@@ -552,7 +552,7 @@ BOOL can_packet_send(char mob, CAN_packet *packet) {
      3f6:	86 30       	cpi	r24, 0x06	; 6
      3f8:	91 05       	cpc	r25, r1
      3fa:	a1 f0       	breq	.+40     	; 0x424 <fm_msg_handler+0x46>
-     3fc:	0d 97       	sbiw	r24, 0x0d	; 13
+     3fc:	0f 97       	sbiw	r24, 0x0f	; 15
      3fe:	d9 f4       	brne	.+54     	; 0x436 <fm_msg_handler+0x58>
      400:	8b 81       	ldd	r24, Y+3	; 0x03
      402:	84 ff       	sbrs	r24, 4
@@ -936,11 +936,11 @@ void fm_wipers_handler( void) {
      5ca:	a1 f0       	breq	.+40     	; 0x5f4 <fm_wipers_handler+0x42>
 			CCW = FALSE;
      5cc:	10 92 5f 01 	sts	0x015F, r1
-			if(duty < 2200) {
+			if(duty < 1600) { // MAX 2200
      5d0:	80 91 06 01 	lds	r24, 0x0106
      5d4:	90 91 07 01 	lds	r25, 0x0107
-     5d8:	88 39       	cpi	r24, 0x98	; 152
-     5da:	28 e0       	ldi	r18, 0x08	; 8
+     5d8:	80 34       	cpi	r24, 0x40	; 64
+     5da:	26 e0       	ldi	r18, 0x06	; 6
      5dc:	92 07       	cpc	r25, r18
      5de:	34 f4       	brge	.+12     	; 0x5ec <fm_wipers_handler+0x3a>
 // 				if(cnt == 100) {
@@ -966,11 +966,11 @@ void fm_wipers_handler( void) {
      5fa:	a9 f0       	breq	.+42     	; 0x626 <fm_wipers_handler+0x74>
 			CW = FALSE;
      5fc:	10 92 08 01 	sts	0x0108, r1
-			if(duty > 1500) {
+			if(duty > 1100) { // MIN 1500
      600:	80 91 06 01 	lds	r24, 0x0106
      604:	90 91 07 01 	lds	r25, 0x0107
-     608:	8d 3d       	cpi	r24, 0xDD	; 221
-     60a:	25 e0       	ldi	r18, 0x05	; 5
+     608:	8d 34       	cpi	r24, 0x4D	; 77
+     60a:	24 e0       	ldi	r18, 0x04	; 4
      60c:	92 07       	cpc	r25, r18
      60e:	34 f0       	brlt	.+12     	; 0x61c <fm_wipers_handler+0x6a>
 // 				if(cnt==100) {
@@ -1034,7 +1034,7 @@ void inits( void) {
      654:	31 e0       	ldi	r19, 0x01	; 1
      656:	44 e0       	ldi	r20, 0x04	; 4
      658:	50 e0       	ldi	r21, 0x00	; 0
-     65a:	6d e0       	ldi	r22, 0x0D	; 13
+     65a:	6f e0       	ldi	r22, 0x0F	; 15
      65c:	70 e0       	ldi	r23, 0x00	; 0
      65e:	81 e0       	ldi	r24, 0x01	; 1
      660:	20 de       	rcall	.-960    	; 0x2a2 <prepare_rx>
@@ -1075,14 +1075,13 @@ int main(void)
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-     680:	8f e1       	ldi	r24, 0x1F	; 31
-     682:	9e e4       	ldi	r25, 0x4E	; 78
+     680:	8f ef       	ldi	r24, 0xFF	; 255
+     682:	9c e7       	ldi	r25, 0x7C	; 124
      684:	01 97       	sbiw	r24, 0x01	; 1
      686:	f1 f7       	brne	.-4      	; 0x684 <main+0xc>
      688:	00 c0       	rjmp	.+0      	; 0x68a <main+0x12>
      68a:	00 00       	nop
-		_delay_ms(10);
-		
+		_delay_ms(16); // the longer the wait the slower the wiper will go
 		asm("sleep");
      68c:	88 95       	sleep
 	}

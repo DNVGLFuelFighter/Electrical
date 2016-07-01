@@ -30,8 +30,7 @@ int main(void)
 		fm_horn_handler();
 		fm_wipers_handler();
 		fm_fans_handler();
-		_delay_ms(10);
-		
+		_delay_ms(16); // the longer the wait the slower the wiper will go
 		asm("sleep");
 	}
 	return 0;

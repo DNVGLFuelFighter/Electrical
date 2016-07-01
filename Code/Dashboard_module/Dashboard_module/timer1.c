@@ -75,9 +75,9 @@ ISR(TIMER1_OVF_vect) {
 	sei();
 	if(ret) {
 		toggle_bit(DDRB, PB5);
-		/* DEBUG */
-		printf("\r\ndata[0]-%d", msg.data[0]);
-		printf("\r\ndata[1]-%d", msg.data[1]);
+// 		/* DEBUG */
+// 		printf("\r\ndata[0]-%d", msg.data[0]);
+// 		printf("\r\ndata[1]-%d", msg.data[1]);
 	}
 	ret = FALSE;
 }
